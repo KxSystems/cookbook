@@ -11,7 +11,7 @@
  * operating systems other than Linux.
  */
  
-#if defined(LINUX)
+#if defined(__gnu_linux__) && defined (__LP64__)
 #   include <stdio.h>
 #   include <string.h>
 #   include <limits.h>
@@ -63,6 +63,6 @@ K q_read_cycles_of_this_cpu(K x)
 }
  
 #else
-#   error "Not implemented"
+#   error "Not implemented; this file is for 64bit linux only."
 #endif
 

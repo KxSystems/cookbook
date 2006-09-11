@@ -1,7 +1,7 @@
 
 # $Id $
 
-CFLAGS = -I. -DLINUX -fPIC
+CFLAGS = -I. -fPIC
 
 .SUFFIXES: .so
 .PHONY: cpu clean doc
