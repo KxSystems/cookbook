@@ -3,7 +3,7 @@
 yahoo:{[ndays;stocks] 
  / ensure that stocks is a list (it might be a single symbol) and then get rid of duplicates, if any
  stocks: distinct stocks,();  
- enddate: `date$.z.z; / .z.z gives current datetime (UTC). We cast it to a date.
+ enddate: .z.d; / .z.d gives current date
  startdate: enddate-ndays;
  / parameter string for HTTP request
  params: "&d=" , (string -1+`mm$enddate) / end month 
@@ -22,13 +22,10 @@ yahoo:{[ndays;stocks]
      pattern: "Date,Open"; / pattern to search for in the result string
      startindex: txt ss pattern; / the function ss finds the positions of a pattern in a string
     txt: startindex _ txt; / drop everything before the pattern (HHTP headers, etc)
-    stocktable: ("*EEEEI ";enlist",")0:txt; / parse the string and create a table from it
+	stocktable: ("DEEEEI ";enlist",")0:txt; / parse the string and create a table from it
     stocktable: update Sym:stock from stocktable; / add a column with name of stock
     tbl,: stocktable; / append the table for this stock to tbl
     i+:1
   ];
  tbl: select from tbl where not null Volume; / get rid of rows with nulls
- / dates in the result come as strings like this "30-Aug-06". Convert them to kdb+ dates
- parsedate: {"D"$(-2_x),"20",-2#x:-9#"0",x}; / a local function definition
- tbl: update Date: parsedate each Date from tbl; 
  `Date`Sym xasc tbl} / order by date and stock
