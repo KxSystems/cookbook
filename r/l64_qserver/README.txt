@@ -1,0 +1,10 @@
+
+This library provides a Q server to R.
+
+See kx wiki https://code.kx.com/trac/wiki/Cookbook/IntegratingWithR
+
+The Makefile works on l64 and l32. Copy in the appropriate platform c.o.
+
+The file kdbplus.R should be changed to suit your installation, in particular use the correct path and filename for the .so file.
+
+Tested with R 2.7 and R 2.8.
