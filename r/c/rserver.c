@@ -282,16 +282,22 @@ static K from_name_robject(SEXP sxp)
  * various utilities
  */
 
-/* get k string into buffer, return success */
-static int getkstring(K x,char *buffer)
+/* get k string or symbol name */
+static char * getkstring(K x)
 {
-	int r = 1;
-	switch (x->t) {
-	case -10 : buffer[0] = x->g; buffer[1] = '\0'; break;
-	case 10 : memcpy(buffer, xG, x->n); buffer[x->n] = '\0'; break;
-	default : r = 0;
+	char *s;
+	int len;
+	switch (xt) {
+	case -KC :
+		s = calloc(2,1); s[0] = xg; break;
+	case KC :
+		s = calloc(1+xn,1); memcpy(s, xG, xn); break;
+	case -KS :
+		len = 1+strlen(xs);
+		s = calloc(len,1); memcpy(s, xs, len); break;
+	default : krr("invalid name");
 	}
-	return r;
+	return s;
 }
 
 /*
@@ -430,12 +436,11 @@ K rset(K x,K y) {
 	if (ROPEN == 0) ropen(ki(0));
 	ParseStatus status;
 	SEXP txt, sym, val;
-	char *buffer = malloc(1024);
-	getkstring(x, buffer);
+	char *name = getkstring(x);
 /* generate symbol to check name is valid */
 	PROTECT(txt=allocVector(STRSXP, 1));
-	SET_STRING_ELT(txt, 0, mkChar(buffer));
-	free(buffer);
+	SET_STRING_ELT(txt, 0, mkChar(name));
+	free(name);
 	PROTECT(sym = R_ParseVector(txt, 1, &status,R_NilValue));
 	if (status != 1) {
 		UNPROTECT(2);
