@@ -125,6 +125,16 @@ void make_data_frame(SEXP data)
    UNPROTECT(3);
 }
 
+/* for datetime, timestamp */
+static void setdatetimeclass(SEXP sxp)
+{
+	SEXP datetimeclass = PROTECT(allocVector(STRSXP,2));
+	SET_STRING_ELT(datetimeclass, 0, mkChar("POSIXt"));
+	SET_STRING_ELT(datetimeclass, 1, mkChar("POSIXct"));
+	setAttrib(sxp, R_ClassSymbol, datetimeclass);
+	UNPROTECT(2);
+}
+
 /*
  * We have functions that turn any K object into the appropriate R SEXP.
  */
@@ -146,6 +156,8 @@ static SEXP from_datetime_kobject(K);
 static SEXP from_minute_kobject(K);
 static SEXP from_second_kobject(K);
 static SEXP from_time_kobject(K);
+static SEXP from_timespan_kobject(K);
+static SEXP from_timestamp_kobject(K);
 static SEXP from_dictionary_kobject(K);
 static SEXP from_table_kobject(K);
 
@@ -170,11 +182,11 @@ conversion_function kdbplus_types[] = {
 	from_double_kobject,
 	from_string_kobject,
 	from_symbol_kobject,
-	error_broken_kobject,
+	from_timestamp_kobject,
 	from_month_kobject,
 	from_date_kobject,
 	from_datetime_kobject,
-	error_broken_kobject,
+	from_timespan_kobject,
 	from_minute_kobject,
 	from_second_kobject,
 	from_time_kobject
@@ -219,7 +231,6 @@ static SEXP from_list_of_kobjects(K x)
 	int i, length = x->n;
 	PROTECT(result = NEW_LIST(length));
 	for (i = 0; i < length; i++) {
-		// SET_VECTOR_ELT(result, i, from_any_kobject(r1(xK[i])));
 		SET_VECTOR_ELT(result, i, from_any_kobject(xK[i]));
 	}
 	r0(x);
@@ -440,11 +451,7 @@ static SEXP from_datetime_kobject(K x)
 		for(i = 0; i < length; i++)
 			NUMERIC_POINTER(result)[i] = (kF(x)[i] + 10957) * 86400;
 	}
-	SEXP datetimeclass = PROTECT(allocVector(STRSXP,2));
-	SET_STRING_ELT(datetimeclass, 0, mkChar("POSIXt"));
-	SET_STRING_ELT(datetimeclass, 1, mkChar("POSIXct"));
-	setAttrib(result, R_ClassSymbol, datetimeclass);
-	UNPROTECT(2);
+  setdatetimeclass(result);
 	return result;
 }
 
@@ -461,6 +468,40 @@ static SEXP from_second_kobject(K object)
 static SEXP from_time_kobject(K object)
 {
 	return from_int_kobject(object);
+}
+
+static SEXP from_timespan_kobject(K x)
+{
+	SEXP result;
+	int i, length = x->n;
+	if (scalar(x)) {
+		PROTECT(result = NEW_NUMERIC(1));
+		NUMERIC_POINTER(result)[0] = x->j / 1e9;
+	}
+	else {
+		PROTECT(result = NEW_NUMERIC(length));
+		for(i = 0; i < length; i++)
+			NUMERIC_POINTER(result)[i] = xJ[i] / 1e9;
+	}
+	UNPROTECT(1);
+	return result;
+}
+
+static SEXP from_timestamp_kobject(K x)
+{
+	SEXP result;
+	int i, length = x->n;
+	if (scalar(x)) {
+		PROTECT(result = NEW_NUMERIC(1));
+		NUMERIC_POINTER(result)[0] = 946684800 + x->j / 1e9;
+	}
+	else {
+		PROTECT(result = NEW_NUMERIC(length));
+		for(i = 0; i < length; i++)
+  		NUMERIC_POINTER(result)[i] = 946684800 + kJ(x)[i] / 1e9;
+	}
+  setdatetimeclass(result);
+	return result;
 }
 
 static SEXP from_dictionary_kobject(K x)
