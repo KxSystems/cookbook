@@ -1,15 +1,15 @@
 
 This is a 32-bit Windows version of the Q server for R suitable for use with R 2.7.0 or higher.
 
-Create c:\r and put the files in there. Also copy in cookbook_code/r/c/qserver.c.
+Create c:\r and copy the files there. Also copy in cookbook_code/r/c/qserver.c.
 
-It is recommended to use gcc, and not the Microsoft compiler. The included R.dll is from R 2.8.1 but you should be able to substitute your own if preferred.
+It is recommended to use gcc, and not the Microsoft compiler. The included R.dll is from R 2.9.0 but you should be able to substitute your own if preferred.
 
 The c.o is single threaded. The usual c.obj on the Kx site will not work.
 
 Compile as:
 
-C:\r>gcc -c base.c -I. -I "\Program Files\R\R-2.8.1\include"
+C:\r>gcc -c base.c -I. -I "\Program Files\R\R-2.9.0\include"
 C:\r>gcc -Wl,--export-all-symbols -shared -o qserver.dll c.o base.o R.dll -lws2_32
 
 Then in R, assuming a q instance listening on port 5000 with a table t defined, try:

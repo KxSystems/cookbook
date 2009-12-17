@@ -218,7 +218,6 @@ static SEXP from_any_kobject(K x)
 static SEXP error_broken_kobject(K broken)
 {
 	error("Value is not a valid kdb+ object; unknown type %d\n", broken->t);
-	r0(broken);
 	return mkChar(r_data_types[0].name);
 }
 
@@ -233,7 +232,6 @@ static SEXP from_list_of_kobjects(K x)
 	for (i = 0; i < length; i++) {
 		SET_VECTOR_ELT(result, i, from_any_kobject(xK[i]));
 	}
-	r0(x);
 	UNPROTECT(1);
 	return result;
 }
@@ -509,9 +507,15 @@ static SEXP from_dictionary_kobject(K x)
 	SEXP names, result;
 
 	/* Try to create a simple table from a keyed table.. */
+	/* ktd will free its argument if successful */
 	K table;
-	if ((table = ktd(x)))
-		return from_table_kobject(table);
+	r1(x);
+	if ((table = ktd(x))) {
+		result = from_table_kobject(table);
+		r0(table);
+		return result;
+	}
+	r0(x);
 
 	/* ..if the previous attempt to convert from a keyed table failed, x is still valid. */
 	PROTECT(names = from_any_kobject(xx));
@@ -519,7 +523,6 @@ static SEXP from_dictionary_kobject(K x)
 #ifndef WIN32
 	SET_NAMES(result, names);
 #endif
-	r0(x);
 	UNPROTECT(2);
 	return result;
 }
@@ -527,7 +530,7 @@ static SEXP from_dictionary_kobject(K x)
 static SEXP from_table_kobject(K x)
 {
 	SEXP result;
-	PROTECT(result = from_dictionary_kobject(r1(xk)));
+	PROTECT(result = from_dictionary_kobject(xk));
 	UNPROTECT(1);
 #ifndef WIN32
 	make_data_frame(result);
@@ -597,7 +600,9 @@ SEXP kx_r_close_connection(SEXP connection)
 SEXP kx_r_execute(SEXP connection, SEXP query)
 {
 	K result;
+	SEXP s;
 	int kx_connection = INTEGER_VALUE(connection);
+
 	result = k(kx_connection, (char*) CHARACTER_VALUE(query), (K)0);
 	if (0 == result) {
 		error("Error: not connected to kdb+ server\n");
@@ -608,5 +613,7 @@ SEXP kx_r_execute(SEXP connection, SEXP query)
 		r0(result);
 		error("Error from kdb+: `%s\n", e);
 	}
-	return from_any_kobject(result);
+	s = from_any_kobject(result);
+	r0(result);
+	return s;
 }
