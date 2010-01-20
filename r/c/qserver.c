@@ -498,31 +498,31 @@ static SEXP from_timestamp_kobject(K x)
 		for(i = 0; i < length; i++)
   		NUMERIC_POINTER(result)[i] = 946684800 + kJ(x)[i] / 1e9;
 	}
-  setdatetimeclass(result);
+	setdatetimeclass(result);
 	return result;
 }
 
 static SEXP from_dictionary_kobject(K x)
 {
 	SEXP names, result;
-
-	/* Try to create a simple table from a keyed table.. */
-	/* ktd will free its argument if successful */
 	K table;
-	r1(x);
-	if ((table = ktd(x))) {
-		result = from_table_kobject(table);
-		r0(table);
-		return result;
-	}
-	r0(x);
 
-	/* ..if the previous attempt to convert from a keyed table failed, x is still valid. */
+	/* if keyed, try to create a simple table */
+	/* ktd will free its argument if successful */
+	/* if fails, x is still valid */
+	if (98==xx->t && 98==xy->t) {
+		r1(x);
+		if (table = ktd(x)) {
+			result = from_table_kobject(table);
+			r0(table);
+			return result;
+		}
+		r0(x);
+	}
+
 	PROTECT(names = from_any_kobject(xx));
 	PROTECT(result = from_any_kobject(xy));
-#ifndef WIN32
 	SET_NAMES(result, names);
-#endif
 	UNPROTECT(2);
 	return result;
 }
@@ -532,9 +532,7 @@ static SEXP from_table_kobject(K x)
 	SEXP result;
 	PROTECT(result = from_dictionary_kobject(xk));
 	UNPROTECT(1);
-#ifndef WIN32
 	make_data_frame(result);
-#endif
 	return result;
 }
 
