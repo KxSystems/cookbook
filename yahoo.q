@@ -18,7 +18,7 @@ yahoo:{[ndays;stocks]
  do[count stocks; /iterate over all the stocks
      stock: stocks[i];
      / send HTTP request for this stock; we get back a string
-     txt: `:http://ichart.finance.yahoo.com "GET /table.csv?s=" , (string stock) , params , " http/1.1\r\nhost:ichart.finance.yahoo.com\r\n\r\n";
+     txt: `:http://ichart.finance.yahoo.com "GET /table.csv?s=" , (string stock) , params , " http/1.0\r\nhost:ichart.finance.yahoo.com\r\n\r\n";
      pattern: "Date,Open"; / pattern to search for in the result string
      startindex: txt ss pattern; / the function ss finds the positions of a pattern in a string
     txt: startindex _ txt; / drop everything before the pattern (HHTP headers, etc)
