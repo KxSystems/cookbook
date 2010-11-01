@@ -399,8 +399,9 @@ K rclose(K x)
 		R_RunExitFinalizers();
 		R_CleanTempDir();
 		Rf_KillAllDevices();
+#ifndef WIN32
 		fpu_setup(FALSE);
-/*		r_finalize(); added to R2.8? */
+#endif		
 		Rf_endEmbeddedR(1);
 	}
 	ROPEN=0;
