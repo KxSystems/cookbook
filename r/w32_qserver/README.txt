@@ -3,7 +3,7 @@ This is a 32-bit Windows version of the Q server for R suitable for use with R 2
 
 Create c:\r and copy the files there. Also copy in cookbook_code/r/c/qserver.c.
 
-It is recommended to use gcc, and not the Microsoft compiler. Copy in R.dll from the R bin directory, e.g. c:\Program Files\R\R-2.9.0\R.dll.
+It is recommended to use gcc, and not the Microsoft compiler. Copy in R.dll from the R bin directory, e.g. c:\Program Files\R\R-2.9.0\bin\R.dll.
 
 The c.o is single threaded. The usual c.obj on the Kx site will not work.
 
