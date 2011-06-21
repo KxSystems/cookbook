@@ -1,5 +1,5 @@
 /*
- * This library provides a Q server for R
+ * This library provides a R server for Q
  *
  * See kx wiki https://code.kx.com/trac/wiki/Cookbook/IntegratingWithR
  */
@@ -19,5 +19,6 @@
 #include <R_ext/Parse.h>
 #include <k.h>
 
-#include "../c/qserver.c"
+#include "../c/common.c"
 #include "../c/rserver.c"
+

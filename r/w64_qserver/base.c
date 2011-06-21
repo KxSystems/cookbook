@@ -1,5 +1,5 @@
 /*
- * This library provides a Q server for R in w32
+ * This library provides a Q server for R in w64
  *
  * See kx wiki https://code.kx.com/trac/wiki/Cookbook/IntegratingWithR
  */
@@ -10,5 +10,6 @@
 #include <Rdefines.h>
 #include <k.h>
 
+#include "../c/common.c"
 #include "../c/qserver.c"
 

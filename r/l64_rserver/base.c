@@ -13,5 +13,5 @@
 #include <R_ext/Parse.h>
 #include <k.h>
 
-#include "../c/qserver.c"
+#include "../c/common.c"
 #include "../c/rserver.c"

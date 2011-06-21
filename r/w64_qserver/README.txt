@@ -4,7 +4,7 @@ File qserver.dll is a 64-bit Windows version of the Q server for R, built with g
 Compile
 -------
 
-To recompile, create c:\r and copy the files there. Copy in R.dll from the R bin directory, e.g. c:\Program Files\R\R-2.12.1\bin\R.dll.
+To recompile, create c:\r and copy the files there. Copy in R.dll from the R bin directory, e.g. c:\Program Files\R\R-2.12.1\bin\R.dll. Create c:\c and copy common.c and qserver.c there.
 
 The c.o is single threaded. The usual c.obj on the Kx site will not work.
 

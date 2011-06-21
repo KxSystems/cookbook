@@ -1,14 +1,9 @@
-#if _WIN64
-typedef long I;typedef __int64 L,J;
-#elif WIN32
-typedef long I,L;typedef __int64 J;
-#else
-typedef int I;typedef long L;typedef long long J;
-#endif  // typedef struct k0{I r;H t,u;I n;G G0[1];}*K; before gcc3.0
-typedef unsigned char*S,G,C;typedef short H;typedef float E;typedef double F;typedef void V;
+#ifndef KX
+#define KX
+typedef char*S,C;typedef unsigned char G;typedef short H;typedef int I;typedef long long J;typedef float E;typedef double F;typedef void V;
 typedef struct k0{I r;H t,u;union{G g;H h;I i;J j;E e;F f;S s;struct k0*k;struct{I n;G G0[1];};};}*K;
 
-#include<string.h>
+//#include<string.h>
 // vector accessors, e.g. kF(x)[i] for float&datetime
 #define kG(x)	((x)->G0)
 #define kC(x)	kG(x)
@@ -30,9 +25,11 @@ typedef struct k0{I r;H t,u;union{G g;H h;I i;J j;E e;F f;S s;struct k0*k;struct
 #define KF 9  // 8 float    double kF
 #define KC 10 // 1 char     char   kC
 #define KS 11 // * symbol   char*  kS
+#define KP 12 // 8 timestampint64  kJ (nanoseconds from 2000.01.01)
 #define KM 13 // 4 month    int    kI
 #define KD 14 // 4 date     int    kI (days from 2000.01.01)
 #define KZ 15 // 8 datetime double kF (days from 2000.01.01)
+#define KN 16 // 8 timespan int64  kJ
 #define KU 17 // 4 minute   int    kI
 #define KV 18 // 4 second   int    kI
 #define KT 19 // 4 time     int    kI (millisecond)
@@ -44,9 +41,9 @@ typedef struct k0{I r;H t,u;union{G g;H h;I i;J j;E e;F f;S s;struct k0*k;struct
 #ifdef __cplusplus
 extern"C"{
 #endif
-extern I khpu(char*,I,char*),khp(char*,I),ymd(I,I,I),dj(I);extern V r0(K),sd0(I);extern S sn(S,I),ss(S);
-extern K ka(I),kb(I),kg(I),kh(I),ki(I),kj(J),ke(F),kf(F),kc(I),ks(S),kd(I),kz(F),kt(I),sd1(I,K(*)(I)),dl(V*f,I),
- ktn(I,I),knk(I,...),kp(S),kpn(S,I),ja(K*,V*),js(K*,S),jk(K*,K),k(I,char*,...),xT(K),xD(K,K),ktd(K),r1(K),krr(S),orr(S),dot(K,K);
+extern I khpun(const S,I,const S,I),khpu(const S,I,const S),khp(const S,I),ymd(I,I,I),dj(I);extern V r0(K),sd0(I),m9(),kclose(I);extern S sn(S,I),ss(S);
+extern K ktj(I,J),ka(I),kb(I),kg(I),kh(I),ki(I),kj(J),ke(F),kf(F),kc(I),ks(S),kd(I),kz(F),kt(I),sd1(I,K(*)(I)),dl(V*f,I),
+ ktn(I,I),knk(I,...),kp(S),kpn(S,I),ja(K*,V*),js(K*,S),jk(K*,K),k(I,const S,...),xT(K),xD(K,K),ktd(K),r1(K),krr(S),orr(S),dot(K,K),b9(I,K),d9(K);
 #ifdef __cplusplus 
 }
 #endif
@@ -119,3 +116,6 @@ extern double log();
 #define xS ((S*)xG)
 #define xK ((K*)xG)
 #define xC xG
+
+#endif
+

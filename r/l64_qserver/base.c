@@ -10,4 +10,5 @@
 #include <Rdefines.h>
 #include <k.h>
 
+#include "../c/common.c"
 #include "../c/qserver.c"
