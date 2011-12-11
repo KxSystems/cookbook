@@ -137,6 +137,7 @@ static SEXP from_list_of_kobjects(K);
 static SEXP from_bool_kobject(K);
 static SEXP from_byte_kobject(K);
 static SEXP from_string_kobject(K);
+static SEXP from_string_column_kobject(K);
 static SEXP from_short_kobject(K);
 static SEXP from_int_kobject(K);
 static SEXP from_long_kobject(K);
@@ -151,6 +152,7 @@ static SEXP from_second_kobject(K);
 static SEXP from_time_kobject(K);
 static SEXP from_timespan_kobject(K);
 static SEXP from_timestamp_kobject(K);
+static SEXP from_columns_kobject(K object);
 static SEXP from_dictionary_kobject(K);
 static SEXP from_table_kobject(K);
 
@@ -203,6 +205,28 @@ static SEXP from_any_kobject(K x)
 	else
 		result = error_broken_kobject(x);
 	return result;
+}
+
+/*
+ * Convert K columns to R object
+ */
+static SEXP from_columns_kobject(K x)
+{
+  SEXP col, result;
+  int i, type, length = x->n;
+  K c;
+  PROTECT(result = NEW_LIST(length));
+  for (i = 0; i < length; i++) {
+    c = xK[i];
+    type = abs(c->t);
+    if (type == 10)
+      col = from_string_column_kobject(c);
+    else
+      col = from_any_kobject(c);
+    SET_VECTOR_ELT(result, i, col);
+  }
+  UNPROTECT(1);
+  return result;
 }
 
 /*
@@ -387,6 +411,20 @@ static SEXP from_string_kobject(K x)
 	return result;
 }
 
+static SEXP from_string_column_kobject(K x)
+{
+  SEXP result;
+  int i, length = x->n;
+  char buffer[2] = " \0";
+  PROTECT(result = NEW_CHARACTER(length));
+  for(i = 0; i < length; i++) {
+    buffer[0] = kC(x)[i];
+    SET_STRING_ELT(result, i, mkChar(buffer));
+  }
+  UNPROTECT(1);
+  return result;
+}
+
 static SEXP from_symbol_kobject(K x)
 {
 	SEXP result;
@@ -522,10 +560,11 @@ static SEXP from_dictionary_kobject(K x)
 
 static SEXP from_table_kobject(K x)
 {
-	SEXP result;
-	PROTECT(result = from_dictionary_kobject(xk));
-	UNPROTECT(1);
-	make_data_frame(result);
-	return result;
+  SEXP names, result;
+  PROTECT(names = from_any_kobject(kK(x->k)[0]));
+  PROTECT(result = from_columns_kobject(kK(x->k)[1]));
+  SET_NAMES(result, names);
+  UNPROTECT(2);
+  make_data_frame(result);
+  return result;
 }
-
