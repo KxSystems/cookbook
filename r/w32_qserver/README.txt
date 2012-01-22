@@ -14,10 +14,7 @@ C:\r>gcc -Wl,--export-all-symbols -shared -o qserver.dll c.o base.o R.dll -lws2_
 
 Then in R, assuming a q instance listening on port 5000 with a table t defined, try:
 
-> source("c:/r/qserver.r")
-> c <- open_connection()
-> t <- execute(c, "select from t")
-> close_connection(c)
+> source("c:/r/test.R")
 
 Note that open_connection actually takes 3 arguments with defaults of "localhost" for the host to connect to, 5000 for the port and none for the user/password credentials.
 
