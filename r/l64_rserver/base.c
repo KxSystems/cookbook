@@ -1,5 +1,5 @@
 /*
- * This library provides a Q server for R
+ * This library provides an R server for Q
  *
  * See kx wiki https://code.kx.com/trac/wiki/Cookbook/IntegratingWithR
  */

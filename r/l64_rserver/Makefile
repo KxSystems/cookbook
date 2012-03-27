@@ -18,7 +18,7 @@ TGT=rserver.so
 
 all:
 	$(REXE) $(CC) $(CFLAGS) $(INCLUDES) $(SRC) $(LIBS) -o $(TGT)
-	cp $(TGT) $(Q)
+	mv $(TGT) $(Q)
 
 clean:
 	rm -rf $(TGT)

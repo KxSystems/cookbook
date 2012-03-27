@@ -106,9 +106,11 @@ static K from_null_robject(SEXP sxp)
 static K from_symbol_robject(SEXP sxp)
 {
 	const char *t = CHAR(CAR(sxp));
-	char s[strlen(t)];
+	char *s = malloc(1+strlen(t));
 	strcpy(s,t);
-	return attR(ks(s),sxp);
+	K x = ks(s);
+	free(s);
+	return attR(x,sxp);
 }
 
 static K from_pairlist_robject(SEXP sxp)
@@ -165,13 +167,18 @@ static K from_char_robject(SEXP sxp)
 
 static K from_logical_robject(SEXP sxp)
 {
+	K x;
 	int len = LENGTH(sxp);
-	int s[len];
+	int *s = malloc(len*sizeof(int));
 	DO(len,s[i]=LOGICAL_POINTER(sxp)[i]);
 	SEXP dim = GET_DIM(sxp);
-	if (isNull(dim))
-		return attR(kintv(len,s),sxp);
-	K x = kinta(len,length(dim),INTEGER(dim),s);
+	if (isNull(dim)) {
+		x = kintv(len,s);
+    free(s);
+		return attR(x,sxp);
+	}
+	x = kinta(len,length(dim),INTEGER(dim),s);
+	free(s);
 	SEXP dimnames = GET_DIMNAMES(sxp);
 	if (!isNull(dimnames))
 		return attR(x,sxp);
@@ -185,13 +192,18 @@ static K from_logical_robject(SEXP sxp)
 
 static K from_integer_robject(SEXP sxp)
 {
+	K x;
 	int len = LENGTH(sxp);
-	int s[len];
+	int *s = malloc(len*sizeof(int));
 	DO(len,s[i]=INTEGER_POINTER(sxp)[i]);
 	SEXP dim = GET_DIM(sxp);
-	if (isNull(dim))
-		return attR(kintv(len,s),sxp);
-	K x = kinta(len,length(dim),INTEGER(dim),s);
+	if (isNull(dim)) {
+		x = kintv(len,s);
+    free(s);
+		return attR(x,sxp);
+	}
+	x = kinta(len,length(dim),INTEGER(dim),s);
+  free(s);
 	SEXP dimnames = GET_DIMNAMES(sxp);
 	if (!isNull(dimnames))
 		return attR(x,sxp);
@@ -205,13 +217,18 @@ static K from_integer_robject(SEXP sxp)
 
 static K from_double_robject(SEXP sxp)
 {
+	K x;
 	int len = LENGTH(sxp);
-	double s[len];
+	double *s = malloc(len*sizeof(double));
 	DO(len,s[i]=REAL(sxp)[i]);
 	SEXP dim = GET_DIM(sxp);
-	if (isNull(dim))
-		return attR(kdoublev(len,s),sxp);
-	K x = kdoublea(len,length(dim),INTEGER(dim),s);
+	if (isNull(dim)) {
+		x = kdoublev(len,s);
+		free(s);
+		return attR(x,sxp);
+	}
+	x = kdoublea(len,length(dim),INTEGER(dim),s);
+	free(s);
 	SEXP dimnames = GET_DIMNAMES(sxp);
 	if (!isNull(dimnames))
 		return attR(x,sxp);
@@ -401,7 +418,7 @@ K rclose(K x)
 		Rf_KillAllDevices();
 #ifndef WIN32
 		fpu_setup(FALSE);
-#endif		
+#endif
 		Rf_endEmbeddedR(1);
 	}
 	ROPEN=0;
@@ -454,4 +471,3 @@ K rset(K x,K y) {
 	UNPROTECT(3);
 	return ki(0);
 }
-

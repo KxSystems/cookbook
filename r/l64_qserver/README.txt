@@ -1,7 +1,7 @@
 
 This library provides a Q server to R.
 
-The Makefile works on l64 and l32. Copy in the appropriate platform c.o.
+The Makefile works on l64 and l32. Copy in k.h and the appropriate platform c.o.
 
 The file qserver.R should be changed to suit your installation, in particular use the correct path and filename for the .so file.
 
