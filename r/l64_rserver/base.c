@@ -15,3 +15,5 @@
 
 #include "../c/common.c"
 #include "../c/rserver.c"
+
+int R_SignalHandlers = 0;
