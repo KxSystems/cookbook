@@ -23,7 +23,7 @@ __declspec(dllexport) void __cdecl $S(K x,K y)
 ...
 </pre>
 
-but we can avoid polluting our portable code by writing a
+but we can avoid polluting our portable code by writing an
 <tt>[http://code.kx.com/wsvn/code/cookbook_code/c/$S.def $S.def]</tt> file
 
 '''$S.def'''
@@ -33,7 +33,7 @@ cat $S.def
 cat <<eof
 </pre>
 
-Now, the functions defined in k.h link with functions in [http://code.kx.com/wsvn/code/kx/kdb%2B/w32/q.lib q.lib] (32bit)
+The functions defined in k.h are implemented in [http://code.kx.com/wsvn/code/kx/kdb%2B/w32/q.lib q.lib] (32bit)
 
 Then, with k.h, $S.c, $S.def, q.lib we can build a c extension:
 <pre>
@@ -43,11 +43,36 @@ C='q)(`add 2:(`add;2))[3i;4i]'
 cat <<eof
 </pre>
 
-Now, with q in your path and in the current directory containing $S.dll:
+Now, with q in your path and in the current directory containing <tt>$S.dll</tt>:
 
 <pre>
 $C
 7i
 </pre>
-eof
 
+TODO: Windows with MinGW
+
+=== Linux ===
+
+<pre>
+gcc -shared -fPIC add.c -o add.so
+</pre>
+
+=== Solaris ===
+
+<pre>
+gcc -G -fPIC  add.c -o add.so
+</pre>
+
+=== Mac OS X ===
+
+<pre>
+gcc -bundle -undefined dynamic_lookup add.c -o add.so
+</pre>
+
+
+The resulting binary should be placed in the same directory as the q executable.
+Solaris x86_64 may require -nostdlib as that lib may not have been pic compiled.
+Mac osx seems to require explicit -m64 flag for 64bit builds.
+
+eof
