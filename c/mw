@@ -1,7 +1,7 @@
 S=add
 cat <<eof
 == Portable Example ==
-The [http://code.kx.com/wsvn/code/cookbook_code/c source].
+The [http://code.kx.com/wsvn/code/cookbook_code/c/ source].
 
 The code in <tt>[http://code.kx.com/wsvn/code/cookbook_code/c/$S.c $S.c]
 </tt> adds two Kdb+ integers and returns the result.  

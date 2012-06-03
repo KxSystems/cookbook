@@ -1,3 +1,4 @@
+#define KXVER 3
 #include"k.h"
 K add(K x,K y)
 {
