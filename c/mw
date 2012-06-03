@@ -1,0 +1,53 @@
+S=add
+cat <<eof
+== Portable Example ==
+The [http://code.kx.com/wsvn/code/cookbook_code/c source].
+
+The code in <tt>[http://code.kx.com/wsvn/code/cookbook_code/c/$S.c $S.c]
+</tt> adds two Kdb+ integers and returns the result.  
+The code is portable across all kdb+ supported platforms.  
+As mentioned above and in [[Cookbook/InterfacingWithC]], you will need
+[http://code.kx.com/wsvn/code/kx/kdb+/c/c/k.h k.h].  
+
+'''$S.c'''
+<pre>
+eof
+cat $S.c
+cat <<eof
+</pre>
+
+=== Building on Windows with Microsoft Compiler ===
+You might be expecting the function to look like:
+<pre>
+__declspec(dllexport) void __cdecl $S(K x,K y)
+...
+</pre>
+
+but we can avoid polluting our portable code by writing a
+<tt>[http://code.kx.com/wsvn/code/cookbook_code/c/$S.def $S.def]</tt> file
+
+'''$S.def'''
+<pre>
+eof
+cat $S.def
+cat <<eof
+</pre>
+
+Now, the functions defined in k.h link with functions in [http://code.kx.com/wsvn/code/kx/kdb%2B/w32/q.lib q.lib] (32bit)
+
+Then, with k.h, $S.c, $S.def, q.lib we can build a c extension:
+<pre>
+eof
+echo cl /LD $S.c $S.def q.lib
+C='q)(`add 2:(`add;2))[3i;4i]'
+cat <<eof
+</pre>
+
+Now, with q in your path and in the current directory containing $S.dll:
+
+<pre>
+$C
+7i
+</pre>
+eof
+
