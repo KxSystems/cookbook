@@ -69,7 +69,7 @@ SEXP kx_r_execute(SEXP connection, SEXP query)
 {
 	K result;
 	SEXP s;
-	int kx_connection = INTEGER_VALUE(connection);
+	kx_connection = INTEGER_VALUE(connection);
 
 	result = k(kx_connection, (char*) CHARACTER_VALUE(query), (K)0);
 	if (0 == result) {

@@ -2,6 +2,8 @@
  * common code for Q/R interface
  */
 
+int kx_connection=0;
+
 /*
  * A (readable type name, R data type number) pair.
  */
@@ -136,6 +138,7 @@ static SEXP error_broken_kobject(K);
 static SEXP from_list_of_kobjects(K);
 static SEXP from_bool_kobject(K);
 static SEXP from_byte_kobject(K);
+static SEXP from_guid_kobject(K);
 static SEXP from_string_kobject(K);
 static SEXP from_string_column_kobject(K);
 static SEXP from_short_kobject(K);
@@ -167,7 +170,7 @@ typedef SEXP(*conversion_function)(K);
 conversion_function kdbplus_types[] = {
 	from_list_of_kobjects,
 	from_bool_kobject,
-	error_broken_kobject,
+	from_guid_kobject,
 	error_broken_kobject,
 	from_byte_kobject,
 	from_short_kobject,
@@ -300,6 +303,11 @@ static SEXP from_byte_kobject(K x)
 	}
 	UNPROTECT(1);
 	return result;
+}
+
+static SEXP from_guid_kobject(K x)
+{
+	return from_any_kobject(k(kx_connection,"string",r1(x),(K)0));
 }
 
 static SEXP from_short_kobject(K x)

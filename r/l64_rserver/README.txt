@@ -1,9 +1,9 @@
 R server for Q
----------------
+--------------
 
-The Makefile works on l64 and l32. It requires that R be available as a
-shared object, libR.so (compile R using --enable-R-shlib, or install a
-package with the shared object, e.g. Rserve). Also, copy in k.h.
+The Makefile works on l64 and l32, and is for kdb+ 3. Change KXVER to 2 for earlier versions.
+It requires that R be available as a shared object, libR.so (compile R using --enable-R-shlib,
+or install a package with the shared object, e.g. Rserve). Also, copy in k.h.
 
 Calling R
 ---------
@@ -33,7 +33,7 @@ For example, a script to load q might be:
 
 See also kx wiki http://code.kx.com/wiki/Cookbook/IntegratingWithR.
 
-Tested on R 2.12.1.
+Tested on R 2.12.1 and kdb+ 3.0.
 
 Chris Burke
-25 Mar 2012
+4 July 2012

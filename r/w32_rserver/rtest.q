@@ -6,15 +6,17 @@ Ropen 0
 Rcmd "a=array(1:24,c(2,3,4))"
 Rget "dim(a)"
 Rget "a"
-Rget "dim(a)"
-a:Rget "a"
+
+if[3<=.z.K;Rset["a";2?0Ng]]
+Rget "a"
 
 Rcmd "b= 2 == array(1:24,c(2,3,4))"
 Rget "dim(b)"
 Rget "b"
 
 Rget "1.1*array(1:24,c(2,3,4))"
-Rset["xyz";1 2 3]
+
+Rset["xyz";1 2 3i]
 Rget "xyz"
 
 Rget "pi"
