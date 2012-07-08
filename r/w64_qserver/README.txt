@@ -1,27 +1,22 @@
 
-File qserver.dll is a 64-bit Windows version of the Q server for R, built with gcc and R-2.12.1.
+This is a 64-bit Windows version of the Q server, built with gcc and R-2.14.1.
 
-Compile
--------
-
-To recompile, create c:\r and copy the files there. Copy in R.dll from the R bin directory, e.g. c:\Program Files\R\R-2.12.1\bin\R.dll. Create c:\c and copy common.c and qserver.c there.
+The binaries are built for kdb+ 3.0. For earlier kdb+, use the version from svn release 1395. 
 
 The c.o is single threaded. The usual c.obj on the Kx site will not work.
 
-Compile as:
+To rebuild the dll:
 
-C:\r>gcc -c base.c -I. -I "\Program Files\R\R-2.12.1\include"
+Create c:\r and copy the files there, also copy common.c and qserver.c to c:\c. Copy in R.dll from the R bin directory, e.g. c:\Program Files\R\R-2.14.1\bin\x64\R.dll.
+
+Use gcc, and not the Microsoft compiler. Compile as:
+
+C:\r>gcc -c base.c -I. -I "\Program Files\R\R-2.41.1\include" -D KXVER=3
 C:\r>gcc -Wl,--export-all-symbols -shared -o qserver.dll c.o base.o R.dll -lws2_32
 
-Example
--------
+To test, assuming a q instance listening on port 5000 with a table t defined, try in R:
 
-In R, assuming a q instance listening on port 5000 with a table t defined, try:
-
-> source("c:/r/qserver.r")
-> c <- open_connection()
-> t <- execute(c, "select from t")
-> close_connection(c)
+> source("c:/r/test.R")
 
 Note that open_connection actually takes 3 arguments with defaults of "localhost" for the host to connect to, 5000 for the port and none for the user/password credentials.
 
