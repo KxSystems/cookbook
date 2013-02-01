@@ -1,0 +1,28 @@
+<html><body><title>websocket</title>
+ <form action="">
+  <input type="button"        value="connect"   onclick="connect()"    >
+  <input type="text"   id="x" placeholder="q)"                         >
+  <input type="submit"        value="send"      onclick="return send()">
+  <input type="button"        value="close"     onclick="ws.close()"   >
+ </form>
+<textarea id="out" rows=25 cols=80></textarea>
+<script>
+var ws,out=document.getElementById("out");
+function connect()
+{if ("WebSocket" in window)
+ {ws=new WebSocket("ws://localhost:5000/");
+  out.value="connecting..." ;
+  ws.onopen=function(e){out.value="connected";} 
+  ws.onclose=function(e){out.value="disconnected";}
+  ws.onmessage=function(e){out.value=e.data;}
+  ws.onerror=function(e){out.value=e.data;}
+ }else alert("WebSockets not supported on your browser.");
+}
+function send()
+{x=document.getElementById("x");
+ v=x.value;
+ ws.send(v);
+ out.value="sent "+v;
+ return false;
+}
+</script></body></html>
