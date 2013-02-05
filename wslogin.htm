@@ -1,0 +1,33 @@
+<html><body><title>login</title>
+ <form action="">
+  <input type="text"     id="u" value='user'><br>
+  <input type="password" id="p" value='At0mbang.'>
+  <input type="submit"   value="login" onclick="return send()">
+ </form>
+<textarea id="out" rows=5 cols=80></textarea>
+<script src="c.js"></script>
+<script>
+var ws,out=document.getElementById("out"),c=connect();
+function connect()
+{if ("WebSocket" in window)
+ {ws=new WebSocket("ws://localhost:5000/");
+  ws.binaryType="arraybuffer";
+  out.value="connecting..." ;
+  ws.onopen=function(e){out.value="connected";};
+  ws.onclose=function(e){out.value="disconnected";};
+  ws.onmessage=function(e)
+  {out.value="";
+   d=deserialize(e.data);
+   for(var x in d)out.value+=x+'='+d[x]+'\n';
+  };
+  ws.onerror=function(e){out.value=e.data;};
+ }else alert("WebSockets not supported on your browser.");
+}
+function send()
+{var d={u:0,p:0};for(var x in d)d[x]=document.getElementById(x).value;
+ ws.send(s=serialize(d));
+ out.value="sent "+s;
+ return false;
+}
+</script></body></html>
+
