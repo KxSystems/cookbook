@@ -1,0 +1,9 @@
+rserve/Rconnection/*.o
+rserve/base/*.o
+rserve/clean.sh
+rserve/copy.sh
+rserve/makeall.sh
+rserve/notes.txt
+rserve/run.sh
+rserve/test.q
+rserve/winrserve_meld.sh
