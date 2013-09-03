@@ -423,7 +423,8 @@ static SEXP from_string_column_kobject(K x)
 {
   SEXP result;
   int i, length = x->n;
-  char buffer[2] = " \0";
+	char buffer[2];
+  buffer[1] = '\0';
   PROTECT(result = NEW_CHARACTER(length));
   for(i = 0; i < length; i++) {
     buffer[0] = kC(x)[i];
@@ -457,18 +458,19 @@ static SEXP from_month_kobject(K object)
 
 static SEXP from_date_kobject(K x)
 {
-	SEXP result;
-	int i, length = x->n;
-	if (scalar(x)) {
-		PROTECT(result = NEW_INTEGER(1));
-		INTEGER_POINTER(result)[0] = x->i + 10957;
-	}
+  SEXP result;
+  SEXP dateclass;
+  int i, length = x->n;
+  if (scalar(x)) {
+    PROTECT(result = NEW_INTEGER(1));
+    INTEGER_POINTER(result)[0] = x->i + 10957;
+  }
 	else {
 		PROTECT(result = NEW_INTEGER(length));
 		for(i = 0; i < length; i++)
-			INTEGER_POINTER(result)[i] = (int) xI[i] + 10957;
-	}
-	SEXP dateclass = PROTECT(allocVector(STRSXP,1));
+		INTEGER_POINTER(result)[i] = (int) xI[i] + 10957;
+  }
+  dateclass = PROTECT(allocVector(STRSXP,1));
 	SET_STRING_ELT(dateclass, 0, mkChar("Date"));
 	setAttrib(result, R_ClassSymbol, dateclass);
 	UNPROTECT(2);

@@ -6,9 +6,16 @@
  * The public interface used from R.
  */
 
-SEXP kx_r_open_connection(SEXP);
-SEXP kx_r_close_connection(SEXP);
-SEXP kx_r_execute(SEXP c, SEXP);
+#ifdef WIN32
+int __stdcall closesocket(unsigned int);
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT
+#endif
+
+EXPORT SEXP kx_r_open_connection(SEXP);
+EXPORT SEXP kx_r_close_connection(SEXP);
+EXPORT SEXP kx_r_execute(SEXP c, SEXP);
 
 /*
  * Open a connection to an existing kdb+ process.
