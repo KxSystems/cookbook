@@ -1,0 +1,46 @@
+/* Smart Meter Usage Report *?
+
+/* misc */
+.container{
+  width: 992px;
+  height: 100%;
+}
+.row:first-child{
+  margin-top: 20px;
+}
+/* Error modal */
+.modal-title{
+  color:red;
+}
+/* Calender css */
+.add-on{
+  cursor: pointer;
+}
+/* filters */
+label{
+  margin-bottom: 2px;
+  font-weight: normal;
+}
+input[type="checkbox"]{
+  margin-right:10px;
+}
+/* Table and database stats */
+.stats{
+  color: #AAA;
+  display: none;
+  margin-bottom: 0;
+}
+.stats li{
+  list-style-type: none;
+  display: inline;
+  padding-left: 15px;
+}
+.stats li:first-child{
+  padding-left: 0;
+}
+/* Table */
+#tableoutput {
+  height: 400px;
+  width:992px;
+  overflow: auto;
+}

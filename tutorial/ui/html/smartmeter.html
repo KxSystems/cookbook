@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Smart Meter Usage Report</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/smartmeter.css" rel="stylesheet">
+    <link href="css/datepicker.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12"><h2>Smart Meter Usage Report</h2></div>
+        <div class="col-md-12"><h4>Filter By</h4></div>
+      </div>      
+      <div class="row">
+        <div class="col-md-3">
+          <h4>Start Date</h4>
+          <div class="input-append date" id="startdate" data-date="2013.08.01" data-date-format="yyyy.mm.dd">
+            <input class="span2" size="16" type="text" value="2013.08.01">
+            <span class="add-on glyphicon glyphicon-calendar"></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <h4>End Date</h4>
+          <div class="input-append date" id="enddate" data-date="2013.08.05" data-date-format="yyyy.mm.dd">
+            <input class="span2" size="16" type="text" value="2013.08.05">
+            <span class="add-on glyphicon glyphicon-calendar"></span>
+          </div>
+        </div>        
+        <div class="col-md-3 multi-select-checkbox" id="region-filter">
+          <h4>Region</h4>
+          <div class="checklist"><label><input type="checkbox" value="mallusk">Mallusk</label></div>
+          <div class="checklist"><label><input type="checkbox" value="carnmoney">Carnmoney</label></div>
+          <div class="checklist"><label><input type="checkbox" value="glengormley">Glengormley</label></div>
+          <div class="checklist"><label><input type="checkbox" value="templepatrick">Templepatrick</label></div>
+          <div class="checklist"><label><input type="checkbox" value="all" checked>All regions</label></div>
+        </div>      
+        <div class="col-md-3 multi-select-checkbox" id="custtype-filter">
+          <h4>Customer type</h4>
+          <div class="checklist"><label><input type="checkbox" value="commercial">Commercial</label></div>
+          <div class="checklist"><label><input type="checkbox" value="industrial">Industrial</label></div>
+          <div class="checklist"><label><input type="checkbox" value="residential">Residential</label></div>
+          <div class="checklist"><label><input type="checkbox" value="all" checked>All customer types</label></div>
+        </div>              
+      </div>     
+      <div class="row controls">
+        <div class="col-md-3" id="grouping">
+          <h4>Grouping</h4>
+          <div class="checklist"><label><input type="checkbox" value="region">Region</label></div>
+          <div class="checklist"><label><input type="checkbox" value="custtype">Customer Type</label></div>
+          <div class="checklist"><label><input type="checkbox" value="date">Date</label></div>
+          <div class="checklist"><label><input type="checkbox" value="hour">Hour</label></div>
+        </div>
+        <div class="col-md-3">
+          <h4>Pivot</h4>
+          <div class="radio"><label><input type="radio" name="pivot" id="pivot-region" value="region">Region</label></div>
+          <div class="radio"><label><input type="radio" name="pivot" id="pivot-custtype" value="custtype">Customer Type</label></div>
+          <div class="radio"><label><input type="radio" name="pivot" id="pivot-date" value="date">Date</label></div>
+          <div class="radio"><label><input type="radio" name="pivot" id="pivot-hour" value="hour">Hour</label></div>
+	  <div class="radio"><label><input type="radio" name="pivot" id="pivot-none" value="none" checked>None</label></div>
+        </div>        
+      </div>       
+      <div class="row">
+        <div class="col-md-1 col-md-offset-10"><a href="http://localhost:5600/export.csv?export" class="btn btn-primary btn-md disabled" id="export" alt="Save CSV file of most recent query">Export</a></div> 
+        <div class="col-md-1 "><button type="button" class="btn btn-primary btn-md" id="submit" alt="Submit query" disabled>Submit</button></div> 
+      </div>
+      <div class="row stats">
+        <div class="col-md-2">Database stats</div>
+        <div class="col-md-10">
+          <ul id="dbstats"></ul>   
+        </div> 
+      </div>       
+      <div class="row stats">
+        <div class="col-md-2">Table stats</div> 
+        <div class="col-md-10">
+          <ul id="tblstats"></ul>   
+        </div> 
+      </div>      
+      <div class="row"> 
+        <div class="col-md-12" id="connecting"><h4 style="text-align:center;">Connecting...</h4></div>
+        <div class="col-md-12" id="tableoutput"></div>
+      </div>
+    </div>
+<!-- Modal used to display errors -->
+<div class="modal fade" id="error-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Error</h4>
+      </div>
+      <div class="modal-body">
+        <p id="error-msg"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->    
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<!-- c.js - kx's library required for serialising and deserialising data -->
+<script src="js/c.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-datepicker.js"></script>
+<script src="js/smartmeter.js"></script>
+  </body>
+</html>
