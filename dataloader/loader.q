@@ -56,7 +56,7 @@ loaddata:{[filename;rawdata]
   out"Writing ",(string count towrite)," rows to ",string writepath;
    
   // splay the table - use an error trap
-  .[upsert;(writepath;data);{out"ERROR - failed to save table: ",x}]; 
+  .[upsert;(writepath;towrite);{out"ERROR - failed to save table: ",x}]; 
   
   // make sure the written path is in the partition dictionary
   partitions[writepath]:date;
