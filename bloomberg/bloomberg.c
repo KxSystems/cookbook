@@ -165,7 +165,7 @@ K consumer_queue_count(K ignore)
 
 K connect(K host, K port, K appName, K conTimeout, K inactivityTime, K responseTimeout, K maxEventQueueSize, K consumerQueueSize)
 {
-    Q(host->t!=-KS||port->t!=-KI||appName->t!=-KS||conTimeout->t!=-KT||inactivityTime->t!=-KT||responseTimeout->t!=-KT||maxEventQueueSize->t!=-KI, "type")
+    Q(host->t!=KS||port->t!=-KI||appName->t!=-KS||conTimeout->t!=-KT||inactivityTime->t!=-KT||responseTimeout->t!=-KT||maxEventQueueSize->t!=-KI, "type")
     Q(Session, "already connected")
 
     // fd for signalling Q main thread
@@ -183,8 +183,13 @@ K connect(K host, K port, K appName, K conTimeout, K inactivityTime, K responseT
 
     blpapi_SessionOptions_t*o;
     Q(!(o = blpapi_SessionOptions_create()), "blpapi_SessionOptions_create");
-    Q(blpapi_SessionOptions_setServerHost(o, host->s), "blpapi_SessionOptions_setServerHost");
-    Q(blpapi_SessionOptions_setServerPort(o, port->i), "blpapi_SessionOptions_setServerPort");
+
+    int h = 0;
+    for(h;h < host->n; h++)
+    {
+      Q(blpapi_SessionOptions_setServerAddress(o, kS(host)[h], port->i, h), "blpapi_SessionOptions_setServerAddress");
+    }
+
     Q(blpapi_SessionOptions_setConnectTimeout(o, conTimeout->i), "blpapi_SessionOptions_setConnectTimeout");
     Q(blpapi_SessionOptions_setDefaultKeepAliveInactivityTime(o, inactivityTime->i), "blpapi_SessionOptions_setDefaultKeepAliveInactivityTime");
     Q(blpapi_SessionOptions_setDefaultKeepAliveResponseTimeout(o, responseTimeout->i), "blpapi_SessionOptions_setDefaultKeepAliveResponseTimeout");
@@ -242,7 +247,7 @@ K authorize(K token, K fakeSid)
 K session_dropped(K ignore)
 {
     Q(!Session, "Session already down")
-//  blpapi_Session_destroy(Session);  //TODO: when is it safe to call this? if called during subscription it cores which is seriously not good
+    blpapi_Session_destroy(Session);
     Session = NULL;
     R 0;
 }
