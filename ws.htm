@@ -11,6 +11,7 @@ var ws,out=document.getElementById("out");
 function connect()
 {if ("WebSocket" in window)
  {ws=new WebSocket("ws://"+window.location.host+"/");
+  // ws = new WebSocket("ws://localhost:5000/");   // worth trying for local-only if the above line fails
   out.value="connecting..." ;
   ws.onopen=function(e){out.value="connected";} 
   ws.onclose=function(e){out.value="disconnected";}
