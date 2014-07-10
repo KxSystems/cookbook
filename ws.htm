@@ -10,7 +10,7 @@
 var ws,out=document.getElementById("out");
 function connect()
 {if ("WebSocket" in window)
- {var l = window.location;ws = new WebSocket("ws://" + (l.host ? l.host : "localhost") + ":" + (l.port ? ":" + l.port : "5000") + "/");
+ {var l = window.location;ws = new WebSocket("ws://" + (l.host ? l.host : "localhost") + ":" + (l.port ? l.port : "5000") + "/");
   out.value="connecting..." ;
   ws.onopen=function(e){out.value="connected";} 
   ws.onclose=function(e){out.value="disconnected";}
