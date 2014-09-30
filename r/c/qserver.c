@@ -7,7 +7,6 @@
  */
 
 #ifdef WIN32
-int __stdcall closesocket(unsigned int);
 #define EXPORT __declspec(dllexport)
 #else
 #define EXPORT
@@ -41,8 +40,17 @@ SEXP kx_r_open_connection(SEXP whence)
 		char *user = (char*) CHARACTER_VALUE(VECTOR_ELT (whence, 2));
 		connection = khpu(host, port, user);
 	}
-	if (connection < 0) {
-		error(strerror(errno));
+        if (!connection)
+          error("Could not authenticate");
+        else if (connection < 0) {
+#ifdef WIN32
+          char buf[256];
+          FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
+                        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buf, 256, NULL);
+          error(buf);
+#else
+	  error(strerror(errno));
+#endif
 	}
 	PROTECT(result = NEW_INTEGER(1));
 	INTEGER_POINTER(result)[0] = connection;
@@ -57,14 +65,11 @@ SEXP kx_r_close_connection(SEXP connection)
 {
 	SEXP result;
 
-	/* Close the connection or return why not. */
-	int e = closesocket(INTEGER_VALUE(connection));
-	if (-1 == e) {
-		error(strerror(errno));
-	}
+	/* Close the connection. */
+	kclose(INTEGER_VALUE(connection));
 
 	PROTECT(result = NEW_INTEGER(1));
-	INTEGER_POINTER(result)[0] = e;
+	INTEGER_POINTER(result)[0] = 0;
 	UNPROTECT(1);
 	return result;
 }
