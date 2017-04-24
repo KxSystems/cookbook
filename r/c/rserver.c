@@ -5,6 +5,7 @@
 /*
  * The public interface used from Q.
  * https://cran.r-project.org/doc/manuals/r-release/R-ints.pdf
+ * https://cran.r-project.org/doc/manuals/r-release/R-exts.html
  */
 K ropen(K x);
 K rclose(K x);
@@ -444,10 +445,12 @@ K rget(K x) { return rexec(1,x); }
 
 static char* ParseError[5]={"null","ok","incomplete","error","eof"};
 
+
 K rexec(int type,K x)
 {
 	if (ROPEN == 0) ropen(ki(0));
-	SEXP e, p, r, xp;char rerr[300];extern char	R_ParseErrorMsg[256];
+	SEXP e, p, r, xp;
+	char rerr[300];extern char	R_ParseErrorMsg[256];
 	int error;
 	ParseStatus status;
 	PROTECT(e=from_string_kobject(x));
@@ -472,17 +475,23 @@ K rset(K x,K y) {
 	if (ROPEN == 0) ropen(ki(0));
 	ParseStatus status;
 	SEXP txt, sym, val;
+	char rerr[300];extern char	R_ParseErrorMsg[256];
 	char *name = getkstring(x);
-/* generate symbol to check name is valid */
+	/* generate symbol to check name is valid */
 	PROTECT(txt=allocVector(STRSXP, 1));
 	SET_STRING_ELT(txt, 0, mkChar(name));
 	free(name);
 	PROTECT(sym = R_ParseVector(txt, 1, &status,R_NilValue));
 	if (status != PARSE_OK) {
 		UNPROTECT(2);
-		return krr(ParseError[status]);
+		sprintf(rerr,"%s: %s",ParseError[status], R_ParseErrorMsg);
+		return krr(rerr);
 	}
-/* read back symbol string */
+	if(SYMSXP != TYPEOF(VECTOR_ELT(sym,0))){
+		UNPROTECT(2);
+		return krr("nyi");
+	}
+	/* read back symbol string */
 	const char *c = CHAR(PRINTNAME(VECTOR_ELT(sym,0)));
 	PROTECT(val = from_any_kobject(y));
 	defineVar(install(c),val,R_GlobalEnv);

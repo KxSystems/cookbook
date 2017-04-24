@@ -99,8 +99,14 @@ Rget"c(1, 2, 1, 1, NA, NaN, -Inf, Inf)"
 
 // long vectors
 Rcmd"x<-c(as.raw(1))"
-Rcmd"x[2147483648L]<-as.raw(1)"
+//Rcmd"x[2147483648L]<-as.raw(1)"
 count Rget"x"
+
+.[Rset;("x[0]";1);"nyi"~]
+Rget["c()"]~Rget"NULL"
+0Ni~Rget"c()"
+
+
 Rcmd"rm(x)"
 // run gc
 Rget"gc()"
