@@ -4,6 +4,7 @@
 
 /*
  * The public interface used from Q.
+ * https://cran.r-project.org/doc/manuals/r-release/R-ints.pdf
  */
 K ropen(K x);
 K rclose(K x);
@@ -11,41 +12,43 @@ K rcmd(K x);
 K rget(K x);
 K rset(K x,K y);
 
-static K rexec(int type,K x);
-static K kintv(int len, int *val);
-static K kinta(int len, int rank, int *shape, int *val);
-static K kdoublev(int len, double *val);
-static K kdoublea(int len, int rank, int *shape, double *val);
-static K from_any_robject(SEXP sxp);
+ZK rexec(int type,K x);
+ZK kintv(int len, int *val);
+ZK kinta(int len, int rank, int *shape, int *val);
+ZK kdoublev(int len, double *val);
+ZK kdoublea(int len, int rank, int *shape, double *val);
+ZK from_any_robject(SEXP sxp);
 
-static int ROPEN=0;
+__thread int ROPEN=0; // initialise thread-local. Will fail in other threads. Ideally need to check if on q main thread.
 
 /*
  * convert R SEXP into K object.
  */
-static K from_any_robject(SEXP);
-static K error_broken_robject(SEXP);
-static K from_null_robject(SEXP);
-static K from_symbol_robject(SEXP);
-static K from_pairlist_robject(SEXP);
-static K from_closure_robject(SEXP);
-static K from_environment_robject(SEXP);
-static K from_promise_robject(SEXP);
-static K from_language_robject(SEXP);
-static K from_builtin_robject(SEXP);
-static K from_char_robject(SEXP);
-static K from_logical_robject(SEXP);
-static K from_integer_robject(SEXP);
-static K from_double_robject(SEXP);
-static K from_complex_robject(SEXP);
-static K from_character_robject(SEXP);
-static K from_dot_robject(SEXP);
-static K from_sxp_robject(SEXP);
-static K from_vector_robject(SEXP);
-static K from_numeric_robject(SEXP);
-static K from_name_robject(SEXP);
-
-static K from_any_robject(SEXP sxp)
+ZK from_any_robject(SEXP);
+ZK error_broken_robject(SEXP);
+ZK from_null_robject(SEXP);
+ZK from_symbol_robject(SEXP);
+ZK from_pairlist_robject(SEXP);
+ZK from_closure_robject(SEXP);
+ZK from_environment_robject(SEXP);
+ZK from_promise_robject(SEXP);
+ZK from_language_robject(SEXP);
+ZK from_builtin_robject(SEXP);
+ZK from_char_robject(SEXP);
+ZK from_logical_robject(SEXP);
+ZK from_integer_robject(SEXP);
+ZK from_double_robject(SEXP);
+ZK from_complex_robject(SEXP);
+ZK from_character_robject(SEXP);
+ZK from_dot_robject(SEXP);
+ZK from_sxp_robject(SEXP);
+ZK from_vector_robject(SEXP);
+ZK from_funsxp_robject(SEXP sxp);
+ZK from_bcode_robject(SEXP sxp);
+ZK from_special_robject(SEXP sxp);
+ZK from_raw_robject(SEXP sxp);
+ZK from_s4_robject(SEXP sxp);
+ZK from_any_robject(SEXP sxp)
 {
 	K result = 0;
 	int type = TYPEOF(sxp);
@@ -57,8 +60,8 @@ static K from_any_robject(SEXP sxp)
 	case ENVSXP : return from_environment_robject(sxp); break;	/* environments */
 	case PROMSXP : return from_promise_robject(sxp); break; 		/* promises: [un]evaluated closure arguments */
 	case LANGSXP : return from_language_robject(sxp); break; 	/* language constructs (special lists) */
-	case SPECIALSXP : return error_broken_robject(sxp); break; 	/* special forms */
-	case BUILTINSXP : return error_broken_robject(sxp); break; 	/* builtin non-special forms */
+	case SPECIALSXP : return from_special_robject(sxp); break; 	/* special forms */
+	case BUILTINSXP : return from_builtin_robject(sxp); break; 	/* builtin non-special forms */
 	case CHARSXP : return from_char_robject(sxp); break; 		/* "scalar" string type (internal only)*/
 	case LGLSXP : return from_logical_robject(sxp); break; 		/* logical vectors */
 	case INTSXP : return from_integer_robject(sxp); break; 		/* integer vectors */
@@ -69,41 +72,69 @@ static K from_any_robject(SEXP sxp)
 	case ANYSXP : return error_broken_robject(sxp); break; 		/* make "any" args work */
 	case VECSXP : return from_vector_robject(sxp); break; 		/* generic vectors */
 	case EXPRSXP : return from_sxp_robject(sxp); break; 	/* sxps vectors */
-	case BCODESXP : return error_broken_robject(sxp); break; 	/* byte code */
+	case BCODESXP : return from_bcode_robject(sxp); break; 	/* byte code */
 	case EXTPTRSXP : return error_broken_robject(sxp); break; 	/* external pointer */
 	case WEAKREFSXP : return error_broken_robject(sxp); break; 	/* weak reference */
-	case RAWSXP : return error_broken_robject(sxp); break; 		/* raw bytes */
-	case S4SXP : return error_broken_robject(sxp); break; 		/* S4 non-vector */
-	case FUNSXP : return error_broken_robject(sxp); break; 		/* Closure or Builtin */
+	case RAWSXP : return from_raw_robject(sxp); break; 		/* raw bytes */
+	case S4SXP : return from_s4_robject(sxp); break; 		/* S4 non-vector */
+
+	case NEWSXP : return error_broken_robject(sxp); break;		/* fresh node creaed in new page */
+  case FREESXP : return error_broken_robject(sxp); break;		/* node released by GC */
+	case FUNSXP : return from_funsxp_robject(sxp); break; 		/* Closure or Builtin */
 	}
 	return result;
 }
 
 /* add attribute */
-static K addattR (K x,SEXP att)
+ZK addattR (K x,SEXP att)
 {
 	return knk(2,from_any_robject(att),x);
 }
 
 /* add attribute if any */
-static K attR(K x,SEXP sxp)
+ZK attR(K x,SEXP sxp)
 {
 	SEXP att = ATTRIB(sxp);
 	if (isNull(att)) return x;
 	return addattR(x,att);
 }
 
-static K error_broken_robject(SEXP sxp)
+ZK error_broken_robject(SEXP sxp)
 {
 	return krr("Broken R object.");
 }
 
-static K from_null_robject(SEXP sxp)
+ZK from_s4_robject(SEXP sxp)
+{
+	return attR(kp("S4"),sxp);
+}
+ZK from_raw_robject(SEXP sxp)
+{
+	K x = ktn(KG,LENGTH(sxp));
+	DO(xn,kG(x)[i]=RAW(sxp)[i])
+	return x;
+}
+
+ZK from_special_robject(SEXP sxp)
+{
+	return attR(kp("special"),sxp);
+}
+
+ZK from_funsxp_robject(SEXP sxp)
+{
+	return attR(kp("FUN"),sxp);
+}
+
+ZK from_bcode_robject(SEXP sxp){
+	return attR(kp("bcode"),sxp);
+}
+
+ZK from_null_robject(SEXP sxp)
 {
 	return attR(ki((int)0x80000000),sxp);
 }
 
-static K from_symbol_robject(SEXP sxp)
+ZK from_symbol_robject(SEXP sxp)
 {
 	const char *t = CHAR(CAR(sxp));
 	char *s = malloc(1+strlen(t));
@@ -113,7 +144,7 @@ static K from_symbol_robject(SEXP sxp)
 	return attR(x,sxp);
 }
 
-static K from_pairlist_robject(SEXP sxp)
+ZK from_pairlist_robject(SEXP sxp)
 {
 	K x = knk(0);
 	SEXP s = sxp;
@@ -125,26 +156,25 @@ static K from_pairlist_robject(SEXP sxp)
 	return attR(x,sxp);
 }
 
-static K from_closure_robject(SEXP sxp)
+ZK from_closure_robject(SEXP sxp)
 {
 	K x = from_any_robject(FORMALS(sxp));
 	K y = from_any_robject(BODY(sxp));
 	return attR(knk(2,x,y),sxp);
 }
 
-static K from_environment_robject(SEXP sxp)
+ZK from_environment_robject(SEXP sxp)
 {
 	return attR(kp("environment"),sxp);
 }
 
-static K from_promise_robject(SEXP sxp)
+ZK from_promise_robject(SEXP sxp)
 {
 	return attR(kp("promise"),sxp);
 }
 
-static K from_language_robject(SEXP sxp)
+ZK from_language_robject(SEXP sxp)
 {
-	int i,len = length(sxp);
 	K x = knk(0);
 	SEXP s = sxp;
 	while (0 < length(s)) {
@@ -154,18 +184,18 @@ static K from_language_robject(SEXP sxp)
 	return attR(x,sxp);
 }
 
-static K from_builtin_robject(SEXP sxp)
+ZK from_builtin_robject(SEXP sxp)
 {
 	return attR(kp("builtin"),sxp);
 }
 
-static K from_char_robject(SEXP sxp)
+ZK from_char_robject(SEXP sxp)
 {
 	K x = kp((char*) CHAR(STRING_ELT(sxp,0)));
 	return attR(x,sxp);
 }
 
-static K from_logical_robject(SEXP sxp)
+ZK from_logical_robject(SEXP sxp)
 {
 	K x;
 	int len = LENGTH(sxp);
@@ -190,7 +220,7 @@ static K from_logical_robject(SEXP sxp)
 	return x;
 }
 
-static K from_integer_robject(SEXP sxp)
+ZK from_integer_robject(SEXP sxp)
 {
 	K x;
 	int len = LENGTH(sxp);
@@ -215,7 +245,7 @@ static K from_integer_robject(SEXP sxp)
 	return x;
 }
 
-static K from_double_robject(SEXP sxp)
+ZK from_double_robject(SEXP sxp)
 {
 	K x;
 	int len = LENGTH(sxp);
@@ -240,12 +270,12 @@ static K from_double_robject(SEXP sxp)
 	return x;
 }
 
-static K from_complex_robject(SEXP sxp)
+ZK from_complex_robject(SEXP sxp)
 {
 	return attR(kp("complex"),sxp);
 }
 
-static K from_character_robject(SEXP sxp)
+ZK from_character_robject(SEXP sxp)
 {
 	K x;
 	int i, length = LENGTH(sxp);
@@ -260,22 +290,18 @@ static K from_character_robject(SEXP sxp)
   return attR(x,sxp);
 }
 
-static K from_dot_robject(SEXP sxp)
+ZK from_dot_robject(SEXP sxp)
 {
 	return attR(kp("pairlist"),sxp);
 }
 
-static K from_sxp_robject(SEXP sxp)
+ZK from_sxp_robject(SEXP sxp)
 {
 	return attR(kp("dot"),sxp);
 }
 
-static K from_list_robject(SEXP sxp)
-{
-	return attR(kp("list"),sxp);
-}
 
-static K from_vector_robject(SEXP sxp)
+ZK from_vector_robject(SEXP sxp)
 {
 	int i, length = LENGTH(sxp);
 	K x = ktn(0, length);
@@ -285,16 +311,6 @@ static K from_vector_robject(SEXP sxp)
   return attR(x,sxp);
 }
 
-static K from_numeric_robject(SEXP sxp)
-{
-	return attR(kp("numeric"),sxp);
-}
-
-static K from_name_robject(SEXP sxp)
-{
-	return attR(kp("name"),sxp);
-}
-
 /*
  * various utilities
  */
@@ -302,7 +318,7 @@ static K from_name_robject(SEXP sxp)
 /* get k string or symbol name */
 static char * getkstring(K x)
 {
-	char *s;
+	char *s=NULL;
 	int len;
 	switch (xt) {
 	case -KC :
@@ -322,14 +338,14 @@ static char * getkstring(K x)
  * done for int, double
  */
 
-static K kintv(int len, int *val)
+ZK kintv(int len, int *val)
 {
 	K x = ktn(KI, len);
 	DO(len,kI(x)[i]=(val)[i]);
 	return x;
 }
 
-static K kinta(int len, int rank, int *shape, int *val)
+ZK kinta(int len, int rank, int *shape, int *val)
 {
 	K x,y;
 	int i,j,r,c,k;
@@ -351,14 +367,14 @@ static K kinta(int len, int rank, int *shape, int *val)
 	return x;
 }
 
-static K kdoublev(int len, double *val)
+ZK kdoublev(int len, double *val)
 {
 	K x = ktn(KF, len);
 	DO(len,kF(x)[i]=(val)[i]);
 	return x;
 }
 
-static K kdoublea(int len, int rank, int *shape, double *val)
+ZK kdoublea(int len, int rank, int *shape, double *val)
 {
 	K x,y;
 	int i,j,r,c,k;
@@ -394,10 +410,9 @@ K ropen(K x)
 {
 	if (ROPEN == 1) return ki(0);
 	int s,mode=0;
-	if (scalar(x) && (1==x->n) && (-6 == x->t))
-		mode=(int) x->n;
+	if (x && -KI ==x->t) mode=x->i;
 	char *argv[] = {"R","--slave"};
-	if (mode == 1) argv[1] = "--verbose";
+	if (mode) argv[1] = "--verbose";
 	int argc = sizeof(argv)/sizeof(argv[0]);
 	s=Rf_initEmbeddedR(argc, argv);
 	if (s<0) return krr("open failed");
@@ -433,19 +448,23 @@ static char* ParseError[5]={"null","ok","incomplete","error","eof"};
 K rexec(int type,K x)
 {
 	if (ROPEN == 0) ropen(ki(0));
-	SEXP e, p, r, xp;
+	SEXP e, p, r, xp;char rerr[300];extern char	R_ParseErrorMsg[256];
 	int error;
 	ParseStatus status;
 	PROTECT(e=from_string_kobject(x));
 	PROTECT(p=R_ParseVector(e, 1, &status, R_NilValue));
-	if (status != 1) {
+	if (status != PARSE_OK) {
 		UNPROTECT(2);
-		return krr(ParseError[status]);
+		sprintf(rerr,"%s: %s",ParseError[status], R_ParseErrorMsg);
+		return krr(rerr);
 	}
 	PROTECT(xp=VECTOR_ELT(p, 0));
-	r=R_tryEval(xp, R_GlobalEnv, &error);
+	r=R_tryEvalSilent(xp, R_GlobalEnv, &error);
 	UNPROTECT(3);
-	if (error) return krr("eval error");
+	if (error) {
+		sprintf(rerr,"eval error: %s",R_curErrorBuf());
+		return krr(rerr);
+	}
 	if (type==1) return from_any_robject(r);
 	return ki(0);
 }
@@ -460,7 +479,7 @@ K rset(K x,K y) {
 	SET_STRING_ELT(txt, 0, mkChar(name));
 	free(name);
 	PROTECT(sym = R_ParseVector(txt, 1, &status,R_NilValue));
-	if (status != 1) {
+	if (status != PARSE_OK) {
 		UNPROTECT(2);
 		return krr(ParseError[status]);
 	}
