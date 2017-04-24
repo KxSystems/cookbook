@@ -97,5 +97,10 @@ Rget"expression(rnorm, rnorm(10), mean(1:10))"
 Rget"list( rep(NA_real_, 20L), rep(NA_real_, 6L) )"
 Rget"c(1, 2, 1, 1, NA, NaN, -Inf, Inf)"
 
+// long vectors
+Rcmd"x<-c(as.raw(1))"
+Rcmd"x[2147483648L]<-as.raw(1)"
+count Rget"x"
+Rcmd"rm(x)"
 // run gc
 Rget"gc()"
