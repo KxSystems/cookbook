@@ -133,7 +133,7 @@ ZK from_bcode_robject(SEXP sxp){
 // NULL in R(R_NilValue): often used as generic zero length vector
 ZK from_null_robject(SEXP sxp)
 {
-	return attR(ki(ni),sxp);
+	return attR(knk(0),sxp);
 }
 
 ZK from_symbol_robject(SEXP sxp)
