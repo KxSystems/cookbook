@@ -398,20 +398,12 @@ static SEXP from_string_kobject(K x)
 	SEXP result;
 	int length = x->n;
 	if (scalar(x)) {
-		char buffer[2];
 		PROTECT(result = NEW_CHARACTER(1));
-		buffer[0] = x->g;
-		buffer[1] = '\0';
-		SET_STRING_ELT(result, 0, mkChar(buffer));
+		SET_STRING_ELT(result, 0, mkCharLen(&x->g,1));
 	}
 	else {
-		char *buffer;
 		PROTECT(result = allocVector(STRSXP, 1));
-		buffer = calloc(length + 1, 1);
-		memcpy(buffer, xG, length);
-		buffer[length] = '\0';
-		SET_STRING_ELT(result, 0, mkChar(buffer));
-		free(buffer);
+		SET_STRING_ELT(result, 0, mkCharLen(xG,length));
 	};
 	UNPROTECT(1);
 	return result;
@@ -421,12 +413,9 @@ static SEXP from_string_column_kobject(K x)
 {
   SEXP result;
   int i, length = x->n;
-	char buffer[2];
-  buffer[1] = '\0';
   PROTECT(result = NEW_CHARACTER(length));
   for(i = 0; i < length; i++) {
-    buffer[0] = kC(x)[i];
-    SET_STRING_ELT(result, i, mkChar(buffer));
+    SET_STRING_ELT(result, i, mkCharLen(&kC(x)[i],1));
   }
   UNPROTECT(1);
   return result;
