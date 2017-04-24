@@ -102,7 +102,7 @@ SEXP make_named_list(char **names, SEXPTYPE *types, Sint *lengths, Sint n)
 void make_data_frame(SEXP data)
 {
 	SEXP class_name, row_names; Sint i, n;
-  	char buffer[1024];
+  char buffer[1024];
 
 	PROTECT(data);
 	PROTECT(class_name = NEW_CHARACTER((Sint) 1));
@@ -163,8 +163,6 @@ static SEXP from_table_kobject(K);
  * An array of functions that deal with kdbplus data types. Note that the order
  * is very important as we index it based on the kdb+ type number in the K object.
  */
-#define number_of_k_types 20
-
 typedef SEXP(*conversion_function)(K);
 
 conversion_function kdbplus_types[] = {
@@ -197,13 +195,13 @@ static SEXP from_any_kobject(K x)
 {
 	SEXP result;
 	int type = abs(x->t);
-	if (98 == type)
+	if (XT == type)
 		result = from_table_kobject(x);
-	else if (99 == type)
+	else if (XD == type)
 		result = from_dictionary_kobject(x);
 	else if (105 == type || 101 == type)
 		result = from_int_kobject(ki(0));
-	else if (-1 < type && type < 20)
+	else if (type <= KT)
 		result = kdbplus_types[type](x);
 	else
 		result = error_broken_kobject(x);
@@ -222,7 +220,7 @@ static SEXP from_columns_kobject(K x)
   for (i = 0; i < length; i++) {
     c = xK[i];
     type = abs(c->t);
-    if (type == 10)
+    if (type == KC)
       col = from_string_column_kobject(c);
     else
       col = from_any_kobject(c);
@@ -273,7 +271,7 @@ static SEXP from_list_of_kobjects(K x)
 static SEXP from_bool_kobject(K x)
 {
 	SEXP result;
-	int i, length = x->n;
+	int length = x->n;
 	if (scalar(x)) {
 		PROTECT(result = NEW_LOGICAL(1));
 		LOGICAL_POINTER(result)[0] = x->g;
@@ -282,7 +280,7 @@ static SEXP from_bool_kobject(K x)
 		int i;
 		PROTECT(result = NEW_LOGICAL(length));
 		for(i = 0; i < length; i++)
-			LOGICAL_POINTER(result)[i] = x->G0[i];
+			LOGICAL_POINTER(result)[i] = kG(x)[i];
 	}
 	UNPROTECT(1);
 	return result;
@@ -299,7 +297,7 @@ static SEXP from_byte_kobject(K x)
 	else {
 		PROTECT(result = NEW_INTEGER(length));
 		for(i = 0; i < length; i++)
-			INTEGER_POINTER(result)[i] = x->G0[i];
+			INTEGER_POINTER(result)[i] = kG(x)[i];
 	}
 	UNPROTECT(1);
 	return result;
@@ -398,7 +396,7 @@ static SEXP from_double_kobject(K x)
 static SEXP from_string_kobject(K x)
 {
 	SEXP result;
-	int i, length = x->n;
+	int length = x->n;
 	if (scalar(x)) {
 		char buffer[2];
 		PROTECT(result = NEW_CHARACTER(1));
@@ -551,9 +549,9 @@ static SEXP from_dictionary_kobject(K x)
 	/* if keyed, try to create a simple table */
 	/* ktd will free its argument if successful */
 	/* if fails, x is still valid */
-	if (98==xx->t && 98==xy->t) {
+	if (XT==xx->t && XT==xy->t) {
 		r1(x);
-		if (table = ktd(x)) {
+		if ((table = ktd(x))) {
 			result = from_table_kobject(table);
 			r0(table);
 			return result;
