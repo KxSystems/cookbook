@@ -13,10 +13,10 @@ K rget(K x);
 K rset(K x,K y);
 
 ZK rexec(int type,K x);
-ZK kintv(int len, int *val);
-ZK kinta(int len, int rank, int *shape, int *val);
-ZK kdoublev(int len, double *val);
-ZK kdoublea(int len, int rank, int *shape, double *val);
+ZK kintv(J len, int *val);
+ZK kinta(J len, int rank, int *shape, int *val);
+ZK kdoublev(J len, double *val);
+ZK kdoublea(J len, int rank, int *shape, double *val);
 ZK from_any_robject(SEXP sxp);
 
 __thread int ROPEN=0; // initialise thread-local. Will fail in other threads. Ideally need to check if on q main thread.
@@ -110,7 +110,7 @@ ZK from_s4_robject(SEXP sxp)
 }
 ZK from_raw_robject(SEXP sxp)
 {
-	K x = ktn(KG,LENGTH(sxp));
+	K x = ktn(KG,XLENGTH(sxp));
 	DO(xn,kG(x)[i]=RAW(sxp)[i])
 	return x;
 }
@@ -122,16 +122,17 @@ ZK from_special_robject(SEXP sxp)
 
 ZK from_funsxp_robject(SEXP sxp)
 {
-	return attR(kp("FUN"),sxp);
+	return attR(kp("fun"),sxp);
 }
 
 ZK from_bcode_robject(SEXP sxp){
 	return attR(kp("bcode"),sxp);
 }
 
+// NULL in R(R_NilValue): often used as generic zero length vector
 ZK from_null_robject(SEXP sxp)
 {
-	return attR(ki((int)0x80000000),sxp);
+	return attR(ki(ni),sxp);
 }
 
 ZK from_symbol_robject(SEXP sxp)
@@ -198,7 +199,7 @@ ZK from_char_robject(SEXP sxp)
 ZK from_logical_robject(SEXP sxp)
 {
 	K x;
-	int len = LENGTH(sxp);
+	J len = XLENGTH(sxp);
 	int *s = malloc(len*sizeof(int));
 	DO(len,s[i]=LOGICAL_POINTER(sxp)[i]);
 	SEXP dim = GET_DIM(sxp);
@@ -223,7 +224,7 @@ ZK from_logical_robject(SEXP sxp)
 ZK from_integer_robject(SEXP sxp)
 {
 	K x;
-	int len = LENGTH(sxp);
+	J len = XLENGTH(sxp);
 	int *s = malloc(len*sizeof(int));
 	DO(len,s[i]=INTEGER_POINTER(sxp)[i]);
 	SEXP dim = GET_DIM(sxp);
@@ -248,7 +249,7 @@ ZK from_integer_robject(SEXP sxp)
 ZK from_double_robject(SEXP sxp)
 {
 	K x;
-	int len = LENGTH(sxp);
+	J len = XLENGTH(sxp);
 	double *s = malloc(len*sizeof(double));
 	DO(len,s[i]=REAL(sxp)[i]);
 	SEXP dim = GET_DIM(sxp);
@@ -278,7 +279,7 @@ ZK from_complex_robject(SEXP sxp)
 ZK from_character_robject(SEXP sxp)
 {
 	K x;
-	int i, length = LENGTH(sxp);
+	J i, length = XLENGTH(sxp);
 	if (length == 1)
 		x = kp((char*) CHAR(STRING_ELT(sxp,0)));
 	else {
@@ -292,18 +293,18 @@ ZK from_character_robject(SEXP sxp)
 
 ZK from_dot_robject(SEXP sxp)
 {
-	return attR(kp("pairlist"),sxp);
+	return attR(kp("dot"),sxp);
 }
 
 ZK from_sxp_robject(SEXP sxp)
 {
-	return attR(kp("dot"),sxp);
+	return attR(kp("exprlist"),sxp);
 }
 
 
 ZK from_vector_robject(SEXP sxp)
 {
-	int i, length = LENGTH(sxp);
+	J i, length = LENGTH(sxp);
 	K x = ktn(0, length);
 	for (i = 0; i < length; i++) {
 		xK[i] = from_any_robject(VECTOR_ELT(sxp, i));
@@ -338,17 +339,17 @@ static char * getkstring(K x)
  * done for int, double
  */
 
-ZK kintv(int len, int *val)
+ZK kintv(J len, int *val)
 {
 	K x = ktn(KI, len);
 	DO(len,kI(x)[i]=(val)[i]);
 	return x;
 }
 
-ZK kinta(int len, int rank, int *shape, int *val)
+ZK kinta(J len, int rank, int *shape, int *val)
 {
 	K x,y;
-	int i,j,r,c,k;
+	J i,j,r,c,k;
 	switch (rank) {
 		case 1 : x = kintv(len,val); break;
 		case 2 :
@@ -367,17 +368,17 @@ ZK kinta(int len, int rank, int *shape, int *val)
 	return x;
 }
 
-ZK kdoublev(int len, double *val)
+ZK kdoublev(J len, double *val)
 {
 	K x = ktn(KF, len);
 	DO(len,kF(x)[i]=(val)[i]);
 	return x;
 }
 
-ZK kdoublea(int len, int rank, int *shape, double *val)
+ZK kdoublea(J len, int rank, int *shape, double *val)
 {
 	K x,y;
-	int i,j,r,c,k;
+	J i,j,r,c,k;
 	switch (rank) {
 		case 1 : x = kdoublev(len,val); break;
 		case 2 :
@@ -424,17 +425,15 @@ K ropen(K x)
  * in practice, errors occur if R is closed, then re-opened
  * these do not seem to affect later use
  */
-
+// note that embedded R can be initialised once. No open/close/open supported 
+// http://r.789695.n4.nabble.com/Terminating-and-restarting-an-embedded-R-instance-possible-td4641823.html
 K rclose(K x)
 {
 	if (ROPEN == 1) {
-		R_RunExitFinalizers();
-		R_CleanTempDir();
-		Rf_KillAllDevices();
 #ifndef WIN32
 		fpu_setup(FALSE);
 #endif
-		Rf_endEmbeddedR(1);
+		Rf_endEmbeddedR(0);	// exit R without error(non-fatal)
 	}
 	ROPEN=0;
 	return ki(0);
