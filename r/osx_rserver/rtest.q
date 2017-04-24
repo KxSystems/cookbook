@@ -1,5 +1,5 @@
 / test R server for Q
-
+setenv[`R_HOME;"/Library/Frameworks/R.framework/Resources"]
 \l rinit.q
 
 Ropen 0
@@ -32,7 +32,7 @@ Rget "length(m)"
 Rget "dim(m)"
 Rget "c(1,2,Inf,-Inf,NaN,NA)"
 
-Rcmd "pdf(\"/home/chris/temp/t1.pdf\")"
+Rcmd "pdf(tempfile(\"t1\",fileext=\".pdf\"))"
 Rcmd "plot(c(2,3,5,7,11))"
 Rcmd "dev.off()"
 
@@ -50,3 +50,52 @@ Rget "wilcox.test(c(1,2,3),c(4,5,6))"
 Rcmd "data(OrchardSprays)"
 a:Rget "OrchardSprays"
 a
+
+// to install package in non-interactive way
+// install.packages("zoo", repos="http://cran.r-project.org")
+Rget"install.packages"
+//'Broken R object.
+Rget".GlobalEnv"
+//"environment"
+Rget"emptyenv()"
+//"environment"
+Rget".Internal"
+//"special"
+@[Rcmd;"typeof(";like[;"incomplete: *"]]
+@[Rcmd;"typeof()";like[;"eval error*"]]
+Rget each ("cos";".C";"floor";"Im";"cumsum";"nargs";"proc.time";"dim";"length";"names";".External")
+Rget "getGeneric(\"+\")"
+Rget"as.raw(10)"
+Rget"as.logical(c(1,FALSE,NA))"
+Rget"1:10"
+// data.frame
+Rget"data.frame(a=1:3, b=c(\"a\",\"b\",\"c\"))"
+Rget"data.frame(a=1:3, b=c(\"a\",\"b\",\"c\"),stringsAsFactors=FALSE)"
+Rget"data.frame(a=1:3)"
+Rget"data.frame()"
+// dates
+Rget"as.Date(\"2005-12-31\")"
+Rget"as.Date(NA)"
+Rget"rep(as.Date(\"2005-12-31\"),2)"
+
+
+
+//lang
+Rget "as.pairlist(1:10)"
+Rget "as.pairlist(TRUE)"
+Rget "as.pairlist(as.raw(1))"
+Rget "pairlist(\"rnorm\", 10L, 0.0, 2.0 )"
+Rget "list(x ~ y + z)"
+Rget "list( c(1, 5), c(2, 6), c(3, 7) )"
+Rget "matrix( 1:16+.5, nc = 4 )"
+Rget "Instrument <- setRefClass(Class=\"Instrument\",fields=list(\"id\"=\"character\", \"description\"=\"character\"))"
+Rget "Instrument$accessors(c(\"id\", \"description\"))"
+Rget "Instrument$new(id=\"AAPL\", description=\"Apple\")"
+Rget "(1+1i)"
+Rget "(0:9)^2"
+Rget"expression(rnorm, rnorm(10), mean(1:10))"
+Rget"list( rep(NA_real_, 20L), rep(NA_real_, 6L) )"
+Rget"c(1, 2, 1, 1, NA, NaN, -Inf, Inf)"
+
+// run gc
+Rget"gc()"
