@@ -108,7 +108,10 @@ Rget["c()"]~Rget"NULL"
 {@[Rget;x;"type"~]}each (.z.p;0b;1;1f;{};([1 2 3]1 2 3))
 Rset[`x;1]
 Rget each ("x";enlist "x";`x;`x`x)  // ("x";"x")?
-
 Rcmd"rm(x)"
+
 // run gc
 Rget"gc()"
+
+Roff:{Rcmd "dev.off()"}
+Rnew:{Rcmd "dev.new()"}
