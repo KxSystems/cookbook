@@ -31,24 +31,16 @@ ZK from_null_robject(SEXP);
 ZK from_symbol_robject(SEXP);
 ZK from_pairlist_robject(SEXP);
 ZK from_closure_robject(SEXP);
-ZK from_environment_robject(SEXP);
-ZK from_promise_robject(SEXP);
 ZK from_language_robject(SEXP);
-ZK from_builtin_robject(SEXP);
 ZK from_char_robject(SEXP);
 ZK from_logical_robject(SEXP);
 ZK from_integer_robject(SEXP);
 ZK from_double_robject(SEXP);
-ZK from_complex_robject(SEXP);
 ZK from_character_robject(SEXP);
-ZK from_dot_robject(SEXP);
-ZK from_sxp_robject(SEXP);
 ZK from_vector_robject(SEXP);
-ZK from_funsxp_robject(SEXP sxp);
-ZK from_bcode_robject(SEXP sxp);
-ZK from_special_robject(SEXP sxp);
 ZK from_raw_robject(SEXP sxp);
-ZK from_s4_robject(SEXP sxp);
+ZK from_nyi_robject(S m,SEXP sxp);
+
 ZK from_any_robject(SEXP sxp)
 {
 	K result = 0;
@@ -58,30 +50,30 @@ ZK from_any_robject(SEXP sxp)
 	case SYMSXP : return from_symbol_robject(sxp); break;    	/* symbols */
 	case LISTSXP : return from_pairlist_robject(sxp); break; 		/* lists of dotted pairs */
 	case CLOSXP : return from_closure_robject(sxp); break;		/* closures */
-	case ENVSXP : return from_environment_robject(sxp); break;	/* environments */
-	case PROMSXP : return from_promise_robject(sxp); break; 		/* promises: [un]evaluated closure arguments */
+	case ENVSXP : return from_nyi_robject("environment",sxp); break;	/* environments */
+	case PROMSXP : return from_nyi_robject("promise",sxp); break; 		/* promises: [un]evaluated closure arguments */
 	case LANGSXP : return from_language_robject(sxp); break; 	/* language constructs (special lists) */
-	case SPECIALSXP : return from_special_robject(sxp); break; 	/* special forms */
-	case BUILTINSXP : return from_builtin_robject(sxp); break; 	/* builtin non-special forms */
+	case SPECIALSXP : return from_nyi_robject("special",sxp); break; 	/* special forms */
+	case BUILTINSXP : return from_nyi_robject("builtin",sxp); break; 	/* builtin non-special forms */
 	case CHARSXP : return from_char_robject(sxp); break; 		/* "scalar" string type (internal only)*/
 	case LGLSXP : return from_logical_robject(sxp); break; 		/* logical vectors */
 	case INTSXP : return from_integer_robject(sxp); break; 		/* integer vectors */
 	case REALSXP : return from_double_robject(sxp); break; 		/* real variables */
-	case CPLXSXP : return from_complex_robject(sxp); break; 		/* complex variables */
+	case CPLXSXP : return from_nyi_robject("complex", sxp); break; 		/* complex variables */
 	case STRSXP : return from_character_robject(sxp); break; 	/* string vectors */
-	case DOTSXP : return from_dot_robject(sxp); break; 		/* dot-dot-dot object */
+	case DOTSXP : return from_nyi_robject("dot",sxp); break; 		/* dot-dot-dot object */
 	case ANYSXP : return error_broken_robject(sxp); break; 		/* make "any" args work */
 	case VECSXP : return from_vector_robject(sxp); break; 		/* generic vectors */
-	case EXPRSXP : return from_sxp_robject(sxp); break; 	/* sxps vectors */
-	case BCODESXP : return from_bcode_robject(sxp); break; 	/* byte code */
+	case EXPRSXP : return from_nyi_robject("exprlist",sxp); break; 	/* sxps vectors */
+	case BCODESXP : return from_nyi_robject("bcode",sxp); break; 	/* byte code */
 	case EXTPTRSXP : return error_broken_robject(sxp); break; 	/* external pointer */
 	case WEAKREFSXP : return error_broken_robject(sxp); break; 	/* weak reference */
 	case RAWSXP : return from_raw_robject(sxp); break; 		/* raw bytes */
-	case S4SXP : return from_s4_robject(sxp); break; 		/* S4 non-vector */
+	case S4SXP : return from_nyi_robject("s4",sxp); break; 		/* S4 non-vector */
 
-	case NEWSXP : return error_broken_robject(sxp); break;		/* fresh node creaed in new page */
+	case NEWSXP : return error_broken_robject(sxp); break;		/* fresh node created in new page */
   case FREESXP : return error_broken_robject(sxp); break;		/* node released by GC */
-	case FUNSXP : return from_funsxp_robject(sxp); break; 		/* Closure or Builtin */
+	case FUNSXP : return from_nyi_robject("fun",sxp); break; 		/* Closure or Builtin */
 	}
 	return result;
 }
@@ -105,29 +97,16 @@ ZK error_broken_robject(SEXP sxp)
 	return krr("Broken R object.");
 }
 
-ZK from_s4_robject(SEXP sxp)
-{
-	return attR(kp("S4"),sxp);
+ZK from_nyi_robject(S marker, SEXP sxp){
+	// (S)Rf_type2char(TYPEOF(sxp))
+	return attR(kp((S)Rf_type2char(TYPEOF(sxp))),sxp);
 }
+
 ZK from_raw_robject(SEXP sxp)
 {
 	K x = ktn(KG,XLENGTH(sxp));
 	DO(xn,kG(x)[i]=RAW(sxp)[i])
 	return x;
-}
-
-ZK from_special_robject(SEXP sxp)
-{
-	return attR(kp("special"),sxp);
-}
-
-ZK from_funsxp_robject(SEXP sxp)
-{
-	return attR(kp("fun"),sxp);
-}
-
-ZK from_bcode_robject(SEXP sxp){
-	return attR(kp("bcode"),sxp);
 }
 
 // NULL in R(R_NilValue): often used as generic zero length vector
@@ -165,16 +144,6 @@ ZK from_closure_robject(SEXP sxp)
 	return attR(knk(2,x,y),sxp);
 }
 
-ZK from_environment_robject(SEXP sxp)
-{
-	return attR(kp("environment"),sxp);
-}
-
-ZK from_promise_robject(SEXP sxp)
-{
-	return attR(kp("promise"),sxp);
-}
-
 ZK from_language_robject(SEXP sxp)
 {
 	K x = knk(0);
@@ -184,11 +153,6 @@ ZK from_language_robject(SEXP sxp)
 		s = CDR(s);
 	}
 	return attR(x,sxp);
-}
-
-ZK from_builtin_robject(SEXP sxp)
-{
-	return attR(kp("builtin"),sxp);
 }
 
 ZK from_char_robject(SEXP sxp)
@@ -272,11 +236,6 @@ ZK from_double_robject(SEXP sxp)
 	return x;
 }
 
-ZK from_complex_robject(SEXP sxp)
-{
-	return attR(kp("complex"),sxp);
-}
-
 ZK from_character_robject(SEXP sxp)
 {
 	K x;
@@ -291,17 +250,6 @@ ZK from_character_robject(SEXP sxp)
 	}
   return attR(x,sxp);
 }
-
-ZK from_dot_robject(SEXP sxp)
-{
-	return attR(kp("dot"),sxp);
-}
-
-ZK from_sxp_robject(SEXP sxp)
-{
-	return attR(kp("exprlist"),sxp);
-}
-
 
 ZK from_vector_robject(SEXP sxp)
 {
@@ -453,7 +401,10 @@ K rexec(int type,K x)
 	char rerr[300];extern char	R_ParseErrorMsg[256];
 	int error;
 	ParseStatus status;
-	PROTECT(e=from_string_kobject(x));
+	if(abs(x->t)==KS) e=from_symbol_kobject(x);
+	else if(abs(x->t)==KC) e=from_string_kobject(x);
+	else return krr("type");
+	PROTECT(e);
 	PROTECT(p=R_ParseVector(e, 1, &status, R_NilValue));
 	if (status != PARSE_OK) {
 		UNPROTECT(2);
