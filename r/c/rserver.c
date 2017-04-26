@@ -419,7 +419,7 @@ K rexec(int type,K x)
 		return krr(rerr);
 	}
 	if (type==1) return from_any_robject(r);
-	return ki(0);
+	return ki(0); //return knk(0) for cmd success?
 }
 
 K rset(K x,K y) {

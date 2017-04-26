@@ -1,5 +1,5 @@
 /*
- * This library provides a R server for Q
+ * This library provides an R server for Q
  *
  * See kx wiki https://code.kx.com/trac/wiki/Cookbook/IntegratingWithR
  */
@@ -9,7 +9,6 @@
 #include <R.h>
 #include <Rdefines.h>
 #include <Rembedded.h>
-
 #ifndef WIN32
 #include <Rinterface.h>
 #endif
@@ -22,3 +21,4 @@
 #include "../c/common.c"
 #include "../c/rserver.c"
 
+int R_SignalHandlers = 0;
