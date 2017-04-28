@@ -10,20 +10,28 @@ The Makefile works on l64 and l32, and is for kdb+ 3. Change KXVER to 2 for earl
 It requires that R be available as a shared object, libR.so (compile R using --enable-R-shlib,
 or install a package with the shared object, e.g. Rserve). 
 
-Copy in k.h and run make.
+Linux and macOS
 
-Windows notes:
+Just run `make` in this folder. Do remember to set QHOME beforehand.
 
-To recompile on windows you will need to install mingw gcc
-Alternatively, install R tools (https://cran.r-project.org/bin/windows/Rtools/). It uses mingw as well, but has been tested and used by R package authors.
+Windows
 
-Create c:\rserver and copy the files there, also copy in R.dll from the R bin directory, i.e. c:\Program Files\R\R-2.15.1\bin\i386\R.dll. Note the i386 subdirectory is a recent addition. Create c:\c and copy common.c and rserver.c there. 
+Install R tools (https://cran.r-project.org/bin/windows/Rtools/). It uses mingw to compile package and has been tested and used by R package authors.
 
-1)run t1.bat to compile w32/rserver.dll
+Set your QHOME and add R to the PATH on your system.
+For 32bit dll run 
+```
+sh w32.sh
+```
 
-2)copy all C:\program files\R\R-2.15.1\i386\bin\*.dll and rserver.dll into c:\q\w32
+For 64bit
+```
+sh w64.sh
+```
 
-3)copy rinit.q and rtest.q into %QHOME%
+Copy  DLLs(w32/rserver.dll and %R_HOME%\bin\i386\*.dll for 32 bit and w64/rserver.dll and %R_HOME%\bin\x64\*.dll for 64 bit) to QHOME/w32 or w64 respectively.
+Copy rinit.q and rtest.q to %QHOME%
+
 
 
 Calling R
@@ -43,8 +51,9 @@ Possibly required:
   LD_LIBRARY_PATH      - path to libR.so  (e.g. /usr/lib/R/lib)
 
 For example, a script to load q might be:
-
+```
   #!/bin/bash
   export R_HOME=/Library/Frameworks/R.framework/Resources
   cd ~/q
   rlwrap m64/q "$@"
+```
