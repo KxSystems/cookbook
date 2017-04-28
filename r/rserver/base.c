@@ -3,7 +3,6 @@
  *
  * See kx wiki https://code.kx.com/trac/wiki/Cookbook/IntegratingWithR
  */
-
 #include <errno.h>
 #include <string.h>
 #include <R.h>
@@ -16,7 +15,7 @@
 #define closesocket(x) close(x)
 #endif
 #include <R_ext/Parse.h>
-#include <k.h>
+#include "../c/k.h"
 
 #include "../c/common.c"
 #include "../c/rserver.c"

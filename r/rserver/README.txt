@@ -13,15 +13,17 @@ or install a package with the shared object, e.g. Rserve).
 Copy in k.h and run make.
 
 Windows notes:
+
+To recompile on windows you will need to install mingw gcc
+Alternatively, install R tools (https://cran.r-project.org/bin/windows/Rtools/). It uses mingw as well, but has been tested and used by R package authors.
+
 Create c:\rserver and copy the files there, also copy in R.dll from the R bin directory, i.e. c:\Program Files\R\R-2.15.1\bin\i386\R.dll. Note the i386 subdirectory is a recent addition. Create c:\c and copy common.c and rserver.c there. 
 
 1)run t1.bat to compile w32/rserver.dll
 
 2)copy all C:\program files\R\R-2.15.1\i386\bin\*.dll and rserver.dll into c:\q\w32
 
-3)copy rinit.q and rtest.q into C:\q
-
-The R.2.15.1 compiled rserver.dll is included. To recompile, you need to install mingw gcc http://www.mingw.org/wiki/InstallationHOWTOforMinGW.
+3)copy rinit.q and rtest.q into %QHOME%
 
 
 Calling R

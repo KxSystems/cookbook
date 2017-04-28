@@ -399,11 +399,11 @@ static SEXP from_string_kobject(K x)
 	int length = x->n;
 	if (scalar(x)) {
 		PROTECT(result = NEW_CHARACTER(1));
-		SET_STRING_ELT(result, 0, mkCharLen(&x->g,1));
+		SET_STRING_ELT(result, 0, mkCharLen((S)&x->g,1));
 	}
 	else {
 		PROTECT(result = allocVector(STRSXP, 1));
-		SET_STRING_ELT(result, 0, mkCharLen(xG,length));
+		SET_STRING_ELT(result, 0, mkCharLen((S)xG,length));
 	};
 	UNPROTECT(1);
 	return result;
@@ -415,7 +415,7 @@ static SEXP from_string_column_kobject(K x)
   int i, length = x->n;
   PROTECT(result = NEW_CHARACTER(length));
   for(i = 0; i < length; i++) {
-    SET_STRING_ELT(result, i, mkCharLen(&kC(x)[i],1));
+    SET_STRING_ELT(result, i, mkCharLen((S)&kC(x)[i],1));
   }
   UNPROTECT(1);
   return result;
@@ -432,7 +432,7 @@ static SEXP from_symbol_kobject(K x)
 	else {
 		PROTECT(result = NEW_CHARACTER(length));
 		for(i = 0; i < length; i++)
-			SET_STRING_ELT(result, i, mkChar(xS[i]));
+			SET_STRING_ELT(result, i, mkChar((S)xS[i]));
 	}
 	UNPROTECT(1);
 	return result;
