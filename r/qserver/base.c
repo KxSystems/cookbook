@@ -8,7 +8,10 @@
 #include <string.h>
 #include <R.h>
 #include <Rdefines.h>
-#include <k.h>
+#ifdef WIN32
+#include <windows.h>
+#endif
+#include "../c/k.h"
 
 #include "../c/common.c"
 #include "../c/qserver.c"
