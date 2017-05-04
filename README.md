@@ -1,4 +1,5 @@
-Source files referred to in the q cookbook
-at https://code.kx.com/q/cookbook
+# The q cookbook
 
-For license terms, see http://code.kx.com/q/about/TermsAndConditions/
+Companion files to the [q cookbook](https://code.kx.com/q/cookbook/introduction) at code.kx.com
+
+See [license terms](http://code.kx.com/q/about/TermsAndConditions/).
