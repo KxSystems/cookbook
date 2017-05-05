@@ -1,4 +1,4 @@
-# osx rserver makefile
+# rserver makefile
 
 OSFLAG :=
 MS :=
@@ -20,7 +20,8 @@ else
 	endif
 	MS=$(shell getconf LONG_BIT)  # 32/64
 endif
-Q=${QHOME}/$(OSFLAG)$(MS)
+QARCH=$(OSFLAG)$(MS)
+Q=${QHOME}/$(QARCH)
 
 CC=gcc
 CFLAGS=-g -O0 -fPIC -m$(MS)  -DKXVER=3
@@ -34,11 +35,11 @@ endif
 R_HOME=$(shell R RHOME)
 R_INCLUDES=$(shell R CMD config --cppflags)
 REXE=$(R_HOME)/bin/R CMD
-INCLUDES=-I. $(R_INCLUDES)
+INCLUDES=$(R_INCLUDES)
 LIBS=-lpthread -L$(R_HOME)/lib -lR
 
 SRC=base.c
-TGT=rserver.so
+TGT=$(addsuffix /rserver.so,$(QARCH))
 
 all:
 	$(REXE) $(CC) $(CFLAGS) $(INCLUDES) $(SRC) $(LIBS) -o $(TGT)
