@@ -10,6 +10,7 @@
 #include <Rdefines.h>
 #ifdef WIN32
 #include <windows.h>
+#include <winbase.h>
 #endif
 #include "../c/k.h"
 

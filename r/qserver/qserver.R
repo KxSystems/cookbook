@@ -1,5 +1,7 @@
 
-dyn.load("qserver.so")
+kdbarch <- as.character(as.factor(c("x86_64"="64","i386"="32"))[R.version$arch])
+kdbplatform <- as.character(as.factor(c("Darwin"="m","Linux"="l","Windows"="w"))[Sys.info()['sysname']])
+dyn.load(file.path(paste0(kdbplatform,kdbarch), paste0("qserver",.Platform$dynlib.ext)))
 
 open_connection <- function(host="localhost", port=5000, user=NULL) {
          parameters <- list(host, as.integer(port), user)
