@@ -203,6 +203,21 @@ static SEXP from_any_kobject(K x)
 		result = from_int_kobject(ki(0));
 	else if (type <= KT)
 		result = kdbplus_types[type](x);
+	else if (KT<type && type < 77) {
+		K t = k(0,"value",r1(x),(K)0);
+		if(t && t->t!=-128) {
+			result = from_any_kobject(t);
+			r0(t);
+		}else 
+			result = error_broken_kobject(x);
+	} else if(77<type && type < XT){
+		K t = k(0,"{(::) each x}",r1(x),(K)0);
+		if(t && t->t!=-128) {
+			result = from_any_kobject(t);
+			r0(t);
+		}else 
+			result = error_broken_kobject(x);
+	}
 	else
 		result = error_broken_kobject(x);
 	return result;
