@@ -113,5 +113,9 @@ Rcmd"rm(x)"
 // run gc
 Rget"gc()"
 
+Rset["a";`sym?`a`b`c]
+`:x set string 10?`4
+Rset["a";get `:x]
+hdel `:x;
 Roff:{Rcmd "dev.off()"}
 Rnew:{Rcmd "dev.new()"}

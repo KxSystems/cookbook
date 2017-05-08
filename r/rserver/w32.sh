@@ -1,2 +1,5 @@
 R32=`R.exe RHOME`/bin/i386
-$R32/R.exe CMD SHLIB -o w32/rserver.dll base.c w32/q.a -DKXVER=3
+export PKG_CFLAGS=-DKXVER=3
+rm base.o
+$R32/R.exe CMD SHLIB -o w32/rserver.dll base.c w32/q.a
+cp w32/rserver.dll $QHOME/w32
