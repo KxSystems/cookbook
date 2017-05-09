@@ -66,7 +66,7 @@ ZK from_any_robject(SEXP sxp)
 	case VECSXP : return from_vector_robject(sxp); break; 		/* generic vectors */
 	case EXPRSXP : return from_nyi_robject("exprlist",sxp); break; 	/* sxps vectors */
 	case BCODESXP : return from_nyi_robject("bcode",sxp); break; 	/* byte code */
-	case EXTPTRSXP : return error_broken_robject(sxp); break; 	/* external pointer */
+	case EXTPTRSXP : return from_nyi_robject("external",sxp); break; 	/* external pointer */
 	case WEAKREFSXP : return error_broken_robject(sxp); break; 	/* weak reference */
 	case RAWSXP : return from_raw_robject(sxp); break; 		/* raw bytes */
 	case S4SXP : return from_nyi_robject("s4",sxp); break; 		/* S4 non-vector */
@@ -98,7 +98,6 @@ ZK error_broken_robject(SEXP sxp)
 }
 
 ZK from_nyi_robject(S marker, SEXP sxp){
-	// (S)Rf_type2char(TYPEOF(sxp))
 	return attR(kp((S)Rf_type2char(TYPEOF(sxp))),sxp);
 }
 
@@ -117,21 +116,18 @@ ZK from_null_robject(SEXP sxp)
 
 ZK from_symbol_robject(SEXP sxp)
 {
-	const char *t = CHAR(CAR(sxp));
-	char *s = malloc(1+strlen(t));
-	strcpy(s,t);
-	K x = ks(s);
-	free(s);
+	const char* t = CHAR(PRINTNAME(sxp));
+	K x = ks((S)t);
 	return attR(x,sxp);
 }
 
 ZK from_pairlist_robject(SEXP sxp)
 {
-	K x = knk(0);
+	K x = ktn(0,2*length(sxp));
 	SEXP s = sxp;
-	while (0 < length(s)) {
-		x = jk(&x,from_any_robject(CAR(s)));
-		x = jk(&x,from_any_robject(TAG(s)));
+	for(J i=0;i<x->n;i+=2) {
+		kK(x)[i] = from_any_robject(CAR(s));
+		kK(x)[i+1] = from_any_robject(TAG(s));
 		s=CDR(s);
 	}
 	return attR(x,sxp);
@@ -157,7 +153,7 @@ ZK from_language_robject(SEXP sxp)
 
 ZK from_char_robject(SEXP sxp)
 {
-	K x = kp((char*) CHAR(STRING_ELT(sxp,0)));
+	K x = kpn((S)CHAR(STRING_ELT(sxp,0)),LENGTH(sxp));
 	return attR(x,sxp);
 }
 
@@ -398,7 +394,7 @@ K rexec(int type,K x)
 {
 	if (ROPEN == 0) ropen(ki(0));
 	SEXP e, p, r, xp;
-	char rerr[300];extern char	R_ParseErrorMsg[256];
+	char rerr[256];extern char	R_ParseErrorMsg[256];
 	int error;
 	ParseStatus status;
 	if(abs(x->t)==KS) e=from_symbol_kobject(x);
@@ -408,25 +404,25 @@ K rexec(int type,K x)
 	PROTECT(p=R_ParseVector(e, 1, &status, R_NilValue));
 	if (status != PARSE_OK) {
 		UNPROTECT(2);
-		sprintf(rerr,"%s: %s",ParseError[status], R_ParseErrorMsg);
+		snprintf(rerr,sizeof(rerr),"%s: %s",ParseError[status], R_ParseErrorMsg);
 		return krr(rerr);
 	}
 	PROTECT(xp=VECTOR_ELT(p, 0));
 	r=R_tryEvalSilent(xp, R_GlobalEnv, &error);
 	UNPROTECT(3);
 	if (error) {
-		sprintf(rerr,"eval error: %s",R_curErrorBuf());
+		snprintf(rerr,sizeof(rerr),"eval error: %s",R_curErrorBuf());
 		return krr(rerr);
 	}
 	if (type==1) return from_any_robject(r);
-	return ki(0); //return knk(0) for cmd success?
+	return (K)0; //return knk(0) for cmd success?
 }
 
 K rset(K x,K y) {
 	if (ROPEN == 0) ropen(ki(0));
 	ParseStatus status;
 	SEXP txt, sym, val;
-	char rerr[300];extern char	R_ParseErrorMsg[256];
+	char rerr[256];extern char	R_ParseErrorMsg[256];
 	char *name = getkstring(x);
 	/* generate symbol to check name is valid */
 	PROTECT(txt=allocVector(STRSXP, 1));
@@ -435,7 +431,7 @@ K rset(K x,K y) {
 	PROTECT(sym = R_ParseVector(txt, 1, &status,R_NilValue));
 	if (status != PARSE_OK) {
 		UNPROTECT(2);
-		sprintf(rerr,"%s: %s",ParseError[status], R_ParseErrorMsg);
+		snprintf(rerr,sizeof(rerr),"%s: %s",ParseError[status], R_ParseErrorMsg);
 		return krr(rerr);
 	}
 	if(SYMSXP != TYPEOF(VECTOR_ELT(sym,0))){
@@ -447,5 +443,5 @@ K rset(K x,K y) {
 	PROTECT(val = from_any_kobject(y));
 	defineVar(install(c),val,R_GlobalEnv);
 	UNPROTECT(3);
-	return ki(0);
+	return (K)0;
 }

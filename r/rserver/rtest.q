@@ -1,5 +1,4 @@
 / test R server for Q
-setenv[`R_HOME;"/Library/Frameworks/R.framework/Resources"]
 \l rinit.q
 
 Ropen 0
@@ -117,5 +116,16 @@ Rset["a";`sym?`a`b`c]
 `:x set string 10?`4
 Rset["a";get `:x]
 hdel `:x;
+
+if[0i=first Rget"is.element(\"data.table\",installed.packages()[,1])";Rcmd"install.packages(\"data.table\",repos=\"https://cloud.r-project.org\")"]
+Rcmd"library(data.table)"
+Rcmd"a<-data.frame(a=c(1,2))"
+Rget"a"
+Rcmd "b<-data.table(a=c(1,2))"
+Rget"b"
+Rcmd"inspect <- function(x, ...) .Internal(inspect(x,...))"
+Rget"inspect"
+Rget"substitute(log(1))"
+
 Roff:{Rcmd "dev.off()"}
 Rnew:{Rcmd "dev.new()"}
