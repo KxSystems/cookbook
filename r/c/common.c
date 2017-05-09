@@ -320,7 +320,9 @@ static SEXP from_byte_kobject(K x)
 
 static SEXP from_guid_kobject(K x)
 {
-	return from_any_kobject(k(kx_connection,"string",r1(x),(K)0));
+	K y = k(kx_connection,"string",r1(x),(K)0);
+	SEXP r = from_any_kobject(y);r0(y);
+	return r;
 }
 
 static SEXP from_short_kobject(K x)
