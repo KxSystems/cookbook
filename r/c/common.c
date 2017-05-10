@@ -102,22 +102,16 @@ SEXP make_named_list(char **names, SEXPTYPE *types, Sint *lengths, Sint n)
 void make_data_frame(SEXP data)
 {
 	SEXP class_name, row_names; Sint i, n;
-  char buffer[1024];
-
 	PROTECT(data);
 	PROTECT(class_name = NEW_CHARACTER((Sint) 1));
 	SET_STRING_ELT(class_name, 0, COPY_TO_USER_STRING("data.frame"));
 
 	/* Set the row.names. */
 	n = GET_LENGTH(VECTOR_ELT(data,0));
-	PROTECT(row_names = NEW_CHARACTER(n));
-	for(i = 0; i < n; i++) {
-      	(void) sprintf(buffer, "%d", i+1);
-      	SET_STRING_ELT(row_names, i, COPY_TO_USER_STRING(buffer));
-   }
-   setAttrib(data, R_RowNamesSymbol, row_names);
-   SET_CLASS(data, class_name);
-   UNPROTECT(3);
+  PROTECT(row_names=NEW_INTEGER(2)); INTEGER(row_names)[0]=NA_INTEGER; INTEGER(row_names)[1]=-n;
+  setAttrib(data, R_RowNamesSymbol, row_names);
+  SET_CLASS(data, class_name);
+  UNPROTECT(3);
 }
 
 /* for datetime, timestamp */
