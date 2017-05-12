@@ -68,3 +68,16 @@ For example, a script to load q might be:
   cd $QHOME
   rlwrap m64/q "$@"
 ```
+
+Examples
+--------
+Note: Examples are kdb+ 3.5 or higher.
+See examples folder:
+Example 1.
+e4.q  is a simple example to plot `moving window volatility' of returns. Converted from http://www.mayin.org/ajayshah/KB/R/html/p4.html
+Example 2. 
+pcd.q is based on Corporate credit card transactions 2014-15(https://data.gov.uk/dataset/corporate-credit-card-transaction-2014-15).
+Please download csv file from the link above and place it in the same folder as pcd.q under name pcd2014v1.csv.
+Example 3.
+http://data.london.gov.uk/datastore/package/tubenetwork-performance-data
+Left for the reader :)
