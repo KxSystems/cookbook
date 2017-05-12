@@ -27,7 +27,7 @@ Rconv:{
 Rinstall:{[pkg] 
   pkg:$[-11=type pkg;string pkg;pkg];rcloud:"https://cloud.r-project.org";
   if[0i=first Rget"is.element('",pkg,"',installed.packages()[,1])";
-    Rcmd"install.packages('",pkg,"',repos='",rcloud,"')"];
+    Rcmd"install.packages('",pkg,"',repos='",rcloud,"',dependencies = TRUE)"];
   }
 Roff:{Rcmd "dev.off()"}
 Rnew:{Rcmd "dev.new()"}
