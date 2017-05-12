@@ -126,6 +126,3 @@ Rget"b"
 Rcmd"inspect <- function(x, ...) .Internal(inspect(x,...))"
 Rget"inspect"
 Rget"substitute(log(1))"
-
-Roff:{Rcmd "dev.off()"}
-Rnew:{Rcmd "dev.new()"}
