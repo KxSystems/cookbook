@@ -101,7 +101,7 @@ SEXP make_named_list(char **names, SEXPTYPE *types, Sint *lengths, Sint n)
  */
 void make_data_frame(SEXP data)
 {
-	SEXP class_name, row_names; Sint i, n;
+	SEXP class_name, row_names; Sint n;
 	PROTECT(data);
 	PROTECT(class_name = NEW_CHARACTER((Sint) 1));
 	SET_STRING_ELT(class_name, 0, COPY_TO_USER_STRING("data.frame"));
