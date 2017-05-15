@@ -29,3 +29,6 @@ Note that open_connection actually takes 3 arguments with defaults of "localhost
 Modify this line with the path to qserver.dll:
 dyn.load("c:/r/qserver.dll")
 
+Want to contribute?
+- Is it possible to use `inline` package to write qserver in 'R'?
+- Prepare qserver to be published to CRAN

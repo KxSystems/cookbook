@@ -12,6 +12,10 @@ K rclose(K x);
 K rcmd(K x);
 K rget(K x);
 K rset(K x,K y);
+K revents(K x){
+	R_ProcessEvents();
+	return (K)0;
+}
 
 ZK rexec(int type,K x);
 ZK kintv(J len, int *val);
@@ -426,6 +430,7 @@ K rexec(int type,K x)
 	PROTECT(xp=VECTOR_ELT(p, 0));
 	r=R_tryEvalSilent(xp, R_GlobalEnv, &error);
 	UNPROTECT(3);
+	R_ProcessEvents();
 	if (error) {
 		snprintf(rerr,sizeof(rerr),"eval error: %s",R_curErrorBuf());
 		return krr(rerr);
@@ -459,5 +464,6 @@ K rset(K x,K y) {
 	PROTECT(val = from_any_kobject(y));
 	defineVar(install(c),val,R_GlobalEnv);
 	UNPROTECT(3);
+	R_ProcessEvents();
 	return (K)0;
 }

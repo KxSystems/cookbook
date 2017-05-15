@@ -5,6 +5,7 @@ Ropen:`rserver 2:(`ropen;1)
 Rcmd0:`rserver 2:(`rcmd;1)
 Rget0:`rserver 2:(`rget;1)
 Rset0:`rserver 2:(`rset;2)
+Revents0:`rserver 2:(`revents;1)
 Rcmd:{Rcmd0 x}
 Rget:{r:Rget0 x;Rconv r}
 Rset:{Rset0[x;y]}
@@ -30,4 +31,5 @@ Rinstall:{[pkg]
     Rcmd"install.packages('",pkg,"',repos='",rcloud,"',dependencies = TRUE)"];
   }
 Roff:{Rcmd "dev.off()"}
-Rnew:{Rcmd "dev.new()"}
+Rnew:{Rcmd "dev.new(noRStudioGD=TRUE)"}
+Reventloop:{.z.ts:Revents0;system"t 1000";}
