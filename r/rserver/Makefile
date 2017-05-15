@@ -24,7 +24,7 @@ QARCH=$(OSFLAG)$(MS)
 Q=${QHOME}/$(QARCH)
 
 CC=gcc
-CFLAGS=-g -O0 -fPIC -m$(MS)  -DKXVER=3
+CFLAGS=-g -O0 -fPIC -m$(MS) -DKXVER=3
 ifeq ($(OSFLAG),m)
 	CFLAGS+=-dynamiclib -undefined dynamic_lookup
 endif

@@ -52,19 +52,26 @@ When calling R, you need to set R_HOME. Required are:
 
   R_HOME               - R home path      (e.g. /usr/lib/R)
 
-Optional are (depends on what calls are made to R):
-
-  R_SHARE_DIR          - R share dir      (e.g. /usr/share/R)
-  R_INCLUDE_DIR        - R include dir    (e.g. /usr/share/R/include)
-
-Possibly required:
-
-  LD_LIBRARY_PATH      - path to libR.so  (e.g. /usr/lib/R/lib)
-
 For example, a script to load q might be:
 ```
   #!/bin/bash
-  export R_HOME=/Library/Frameworks/R.framework/Resources
-  cd $QHOME
-  rlwrap m64/q "$@"
+  export R_HOME=`R RHOME`
+  rlwrap $QHOMEm64/q "$@"
 ```
+
+If using interactive plotting, you have to take care of some extras.
+1. Call `Revents0` on timer(.z.ts + \\t). This will give R library some time to process graphics event. macOS and Windows only.
+2. To plot with lattice and/or ggplot2 you will need to call `print` on chart object. 
+
+Examples
+--------
+Note: Examples are kdb+ 3.5 or higher.
+See examples folder:
+Example 1.
+e4.q  is a simple example to plot `moving window volatility' of returns. Converted from http://www.mayin.org/ajayshah/KB/R/html/p4.html
+Example 2. 
+pcd.q is based on Corporate credit card transactions 2014-15( https://data.gov.uk/dataset/corporate-credit-card-transaction-2014-15 ).
+Please download csv file from the link above and place it in the same folder as pcd.q under name pcd2014v1.csv.
+Example 3.
+http://data.london.gov.uk/datastore/package/tubenetwork-performance-data
+Left for the reader :)

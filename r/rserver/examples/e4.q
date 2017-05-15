@@ -1,6 +1,6 @@
 // Goal: To do `moving window volatility' of returns.
 // http://www.mayin.org/ajayshah/KB/R/html/p4.html
-\l rtest.q
+//\l rtest.q
 // check if lib installed 
 if[0i=first Rget"is.element(\"zoo\",installed.packages()[,1])";Rcmd"install.packages(\"zoo\",repos=\"https://cloud.r-project.org\")"]
 Rcmd"library(zoo)";
@@ -31,4 +31,4 @@ Rcmd"plot(p, type=\"l\", lwd=2, col=\"darkgreen\", xaxt=\"n\", yaxt=\"n\", xlab=
 Rcmd"axis(4)";
 Roff[]
 hcount `:pretty_plot_test.png
-hdel `:pretty_plot_test.png
+//hdel `:pretty_plot_test.png

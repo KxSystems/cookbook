@@ -12,6 +12,10 @@ K rclose(K x);
 K rcmd(K x);
 K rget(K x);
 K rset(K x,K y);
+K revents(K x){
+	R_ProcessEvents();
+	return (K)0;
+}
 
 ZK rexec(int type,K x);
 ZK kintv(J len, int *val);
@@ -78,10 +82,25 @@ ZK from_any_robject(SEXP sxp)
 	return result;
 }
 
+ZK dictpairlist(SEXP sxp)
+{
+	K k = ktn(0,length(sxp));
+	K v = ktn(0,length(sxp));
+	SEXP s = sxp;
+	for(int i=0;i<length(sxp);i++) {
+		kK(k)[i] = from_any_robject(TAG(s));
+		kK(v)[i] = from_any_robject(CAR(s));
+		s=CDR(s);
+	}
+	return xD(k,v);
+}
+
 /* add attribute */
 ZK addattR (K x,SEXP att)
 {
-	return knk(2,from_any_robject(att),x);
+	// attrs are pairlists: LISTSXP
+	K u = dictpairlist(att);
+	return knk(2,u,x);
 }
 
 /* add attribute if any */
@@ -109,9 +128,10 @@ ZK from_raw_robject(SEXP sxp)
 }
 
 // NULL in R(R_NilValue): often used as generic zero length vector
+// NULL objects cannot have attributes and attempting to assign one by attr gives an error
 ZK from_null_robject(SEXP sxp)
 {
-	return attR(knk(0),sxp);
+	return knk(0);
 }
 
 ZK from_symbol_robject(SEXP sxp)
@@ -410,6 +430,7 @@ K rexec(int type,K x)
 	PROTECT(xp=VECTOR_ELT(p, 0));
 	r=R_tryEvalSilent(xp, R_GlobalEnv, &error);
 	UNPROTECT(3);
+	R_ProcessEvents();
 	if (error) {
 		snprintf(rerr,sizeof(rerr),"eval error: %s",R_curErrorBuf());
 		return krr(rerr);
@@ -443,5 +464,6 @@ K rset(K x,K y) {
 	PROTECT(val = from_any_kobject(y));
 	defineVar(install(c),val,R_GlobalEnv);
 	UNPROTECT(3);
+	R_ProcessEvents();
 	return (K)0;
 }
