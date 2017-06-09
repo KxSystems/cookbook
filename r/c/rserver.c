@@ -86,8 +86,8 @@ ZK dictpairlist(SEXP sxp)
 {
 	K k = ktn(0,length(sxp));
 	K v = ktn(0,length(sxp));
-	SEXP s = sxp;
-	for(int i=0;i<length(sxp);i++) {
+	SEXP s = sxp;J i;
+	for(i=0;i<length(sxp);i++) {
 		kK(k)[i] = from_any_robject(TAG(s));
 		kK(v)[i] = from_any_robject(CAR(s));
 		s=CDR(s);
@@ -144,8 +144,8 @@ ZK from_symbol_robject(SEXP sxp)
 ZK from_pairlist_robject(SEXP sxp)
 {
 	K x = ktn(0,2*length(sxp));
-	SEXP s = sxp;
-	for(J i=0;i<x->n;i+=2) {
+	SEXP s = sxp;J i;
+	for(i=0;i<x->n;i+=2) {
 		kK(x)[i] = from_any_robject(CAR(s));
 		kK(x)[i+1] = from_any_robject(TAG(s));
 		s=CDR(s);
