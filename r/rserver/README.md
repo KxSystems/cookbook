@@ -1,7 +1,7 @@
-R server for Q
+embedR: Embedding R inside q
 --------------
 
-See Kx wiki http://code.kx.com/q/cookbook/interfacing-with-r/
+See Kx wiki http://code.kx.com/q/interfaces/with-r/#calling-r-from-q
 
 Installation
 ------------
