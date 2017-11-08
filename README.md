@@ -1,8 +1,8 @@
 # The q cookbook
 
-Companion files to the [q cookbook](https://code.kx.com/q/cookbook/introduction) at code.kx.com
+Companion files to the [q cookbook](https://code.kx.com/q/cookbook) at code.kx.com
 
-See [license terms](http://code.kx.com/q/about/TermsAndConditions/).
+See [license terms](http://code.kx.com/q/about/thissite/#license).
 
 
 You are welcome to download and use this code according to the terms of the licence. 
