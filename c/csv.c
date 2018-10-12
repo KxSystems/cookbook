@@ -12,8 +12,8 @@
 //  compile with gcc -m64 -DKXVER=3 csv.c c.o
 //  obtain c.o from http://kx.com/q/l64/c.o for linux
 // windows:
-//  start the x86 or 64 bit version of build environment, then: cl -DKXVER=3 /MD csv.c c.obj ws2_32.lib
-//  obtain c.obj from http://kx.com/q/w32/ or w64/
+//  start the x86 or 64 bit version of build environment, then: cl -DKXVER=3 /MD csv.c c_static.lib ws2_32.lib
+//  obtain c_static.lib from http://kx.com/q/w32/ or w64/
 
 // times are typically stored in GMT on a server, default is not to apply our local timezone to display.
 #define USEGMT 1
