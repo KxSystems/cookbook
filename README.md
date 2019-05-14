@@ -1,11 +1,13 @@
-# The q cookbook
-
-Companion files to the [q cookbook](https://code.kx.com/q/cookbook) at code.kx.com
-
-See [license terms](http://code.kx.com/q/about/thissite/#license).
+# The q Knowledge Base
 
 
-You are welcome to download and use this code according to the terms of the licence. 
+
+Companion files to the [Knowledge Base](https://code.kx.com/v2/kb/) at code.kx.com.
+
+See [license terms](http://code.kx.com/v2/about/thissite/#license).
+
+
+You are welcome to download and use this code according to the terms of the license. 
 
 Kx Systems recommends you do not link your application to this repository, 
 which would expose your application to various risks:
@@ -14,5 +16,4 @@ which would expose your application to various risks:
 - Updates to the repo may break your application 
 - Code refactoring might return 404s to your application
 
-Instead, download code and subject it to the version control and regression testing 
-you use for your application.
+Instead, download code and subject it to the version control and regression testing you use for your application.
