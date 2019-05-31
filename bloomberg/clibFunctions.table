@@ -1,0 +1,8 @@
+functionName (symbol)   | numberOfArgs (long)   | argNames (symbol[])
+connect                 | 8                     | host, port, appliance name, connection timeout, response time, max event queue size, consumer queue size, adapter topics
+subscribe               | 4                     | bloomberg ticker, correlation ID, fields, resubscribe
+authorize               | 1                     | token
+unsubscribe             | 1                     | correlation ID
+session_dropped         | 1                     | none
+consumer_queue_count    | 1                     | none
+stop                    | 1                     | none
