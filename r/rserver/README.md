@@ -3,7 +3,7 @@ embedR: Embedding R inside q
 
 
 
-See  <http://code.kx.com/v2/interfaces/with-r/#calling-r-from-q>
+See  <https://code.kx.com/v2/interfaces/with-r/#calling-r-from-q>
 
 
 Installation

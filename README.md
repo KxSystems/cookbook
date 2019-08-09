@@ -4,7 +4,7 @@
 
 Companion files to the [Knowledge Base](https://code.kx.com/v2/kb/) at code.kx.com.
 
-See [license terms](http://code.kx.com/v2/about/thissite/#license).
+See [license terms](https://code.kx.com/v2/about/thissite/#license).
 
 
 You are welcome to download and use this code according to the terms of the license. 
