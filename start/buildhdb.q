@@ -21,6 +21,8 @@ dsx:5               / number of segments
 
 bgn:2013.05.01      / begin, end
 end:2013.05.31      / (only mon-fri used)
+bgntm: 09:30:00.0   / exchange open time
+endtm: 16:00:00.0   / exchange close time
 
 / approximate values:
 nt:1000             / trades per stock per day
@@ -84,26 +86,38 @@ write:{
   (` sv dst,`$x) set t];}
 / symbol data for tick demo
 
-sn:2 cut (
- `AMD;"ADVANCED MICRO DEVICES";
- `AIG;"AMERICAN INTL GROUP INC";
- `AAPL;"APPLE INC COM STK";
- `DELL;"DELL INC";
- `DOW;"DOW CHEMICAL CO";
- `GOOG;"GOOGLE INC CLASS A";
- `HPQ;"HEWLETT-PACKARD CO";
- `INTC;"INTEL CORP";
- `IBM;"INTL BUSINESS MACHINES CORP";
- `MSFT;"MICROSOFT CORP";
- `ORCL;"ORACLE CORPORATION";
- `PEP;"PEPSICO INC";
- `PRU;"PRUDENTIAL FINANCIAL INC.";
- `SBUX;"STARBUCKS CORPORATION";
- `TXN;"TEXAS INSTRUMENTS")
+sn:3 cut (
+ `AMZN;"Amazon.com, Inc."; 92;
+ `AMD;"ADVANCED MICRO DEVICES"; 33;
+ `AIG;"AMERICAN INTL GROUP INC"; 27;
+ `AAPL;"APPLE INC COM STK"; 84;
+ `BAC;"Bank of America Corporation";36;
+ `CCL;"Carnival Corporation & plc";8;
+ `DELL;"DELL INC";12;
+ `DOW;"DOW CHEMICAL CO";20;
+ `GOOG;"GOOGLE INC CLASS A";72;
+ `HPQ;"HEWLETT-PACKARD CO";36;
+ `INTC;"INTEL CORP";51;
+ `IBM;"INTL BUSINESS MACHINES CORP";42;
+ `META;"Meta Platforms, Inc.";90;
+ `MSFT;"MICROSOFT CORP";9;
+ `NIO;"NIO Inc.";29;
+ `NVDA;"NVIDIA Corporation";132;
+ `ORCL;"ORACLE CORPORATION";35;
+ `PEP;"PEPSICO INC";22;
+ `PRU;"PRUDENTIAL FINANCIAL INC.";59;
+ `SNAP;"Snap Inc.";9;
+ `SBUX;"STARBUCKS CORPORATION";5;
+ `SOFI;"SoFi Technologies, Inc.";214;
+ `T;"AT&T Inc.";18;
+ `TSLA;"Tesla, Inc.";63;
+ `TWTR;"Twitter, Inc.";53;
+ `TXN;"TEXAS INSTRUMENTS";18;
+ `XPEV;"XPeng Inc."; 6)
 
 s:first each sn
-n:last each sn
-p:33 27 84 12 20 72 36 51 42 29 35 22 59 63 18
+n:@[;1] each sn
+p:last each sn
 m:" ABHILNORYZ" / mode
 c:" 89ABCEGJKLNOPRTWZ" / cond
 e:"NONNONONNNNOONO" / ex
@@ -177,7 +191,7 @@ day:{
   len:volumes x;
   batch[x;len];
   sa:string dx:dates x;
-  r:asc 09:30:00.0+floor 23400000*volprof count qx;
+  r:asc bgntm+floor (endtm-bgntm)*volprof count qx;
   cx:len?qpt+npt;
   cn:count n:where cx=0;
   sp:1=cn?20;
@@ -197,7 +211,7 @@ day each til nd;
 
 {
   batch[nd-1;nl2];
-  r:asc 09:30:00.0+(count qx)?28800000;
+  r:asc bgntm+(count qx)?endtm-bgntm;
   m:nl2?2;
   t:([]date:last dates;time:r;sym:s qx;price:qp+qa*-1 1 m;size:vol2 nl2;side:"BS" m;ex:e qx);
   (` sv dst,`depth) set .Q.en[dst] t;}[];
