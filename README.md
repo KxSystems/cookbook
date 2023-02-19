@@ -2,9 +2,9 @@
 
 
 
-Companion files to the [Knowledge Base](https://code.kx.com/v2/kb/) at code.kx.com.
+Companion files to the [Knowledge Base](https://code.kx.com/q) at code.kx.com.
 
-See [license terms](https://code.kx.com/v2/about/thissite/#license).
+See [license terms](https://code.kx.com/q/about/thissite/#license).
 
 
 You are welcome to download and use this code according to the terms of the license. 
