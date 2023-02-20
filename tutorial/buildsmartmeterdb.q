@@ -16,7 +16,7 @@ sampleperiod:0D00:01
 
 /- To compress the data when saving it, uncomment the line below
 /- various compression options are available
-/- For details see http://code.kx.com/wiki/Cookbook/FileCompression
+/- For details see https://code.kx.com/q/kb/file-compression/
 /- need to ensure compatibility
 / $[(.z.K>=2.8) and .z.k>=2011.11.21; .z.zd:15 1 0; '"cannot use .z.zd for compression - incompatible kdb+ version"]
 

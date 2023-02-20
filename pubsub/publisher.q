@@ -34,7 +34,7 @@ grid:([]time:`timestamp$(); sym:`symbol$(); capacity:`float$(); flowrate:`int$()
 upath:"tick/u.q"
 @[system;"l ",upath;{-2"Failed to load u.q from ",x," : ",y, 
 		       ". Please make sure u.q is accessible.",
-                       " kdb+tick can be downloaded from http://code.kx.com/wsvn/code/kx/kdb+tick";
+                       " kdb+tick can be downloaded from https://github.com/KxSystems/kdb-tick";
 		       exit 2}[upath]]
 
 // initialise pubsub 

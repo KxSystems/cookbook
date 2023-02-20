@@ -1,7 +1,7 @@
 /*
  * This library provides an R server for Q
  *
- * See kx wiki https://code.kx.com/trac/wiki/Cookbook/IntegratingWithR
+ * See kx wiki https://code.kx.com/q/interfaces/r
  */
 #include <errno.h>
 #include <string.h>
