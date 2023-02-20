@@ -1,5 +1,5 @@
 Rserve for kdb+
----------------
+===============
 
 This is a kdb+ interface to Rserve, http://www.rforge.net/Rserve.
 
@@ -23,9 +23,13 @@ To run:
 
 ---
 
-See also kx wiki http://code.kx.com/wiki/Cookbook/IntegratingWithR.
-
 Tested on Rserve 0.6.8 and 1.7.0 with kdb+ 3.0.
 
 Chris Burke
 22 April 2013
+
+---
+2023.02.19
+
+See Fusion interfaces https://github.com/KxSystems/embedR
+                      https://github.com/KxSystems/rkdb
