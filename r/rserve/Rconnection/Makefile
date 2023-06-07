@@ -1,5 +1,5 @@
 
-MS=$(shell getconf LONG_BIT)
+MS?=$(shell getconf LONG_BIT)
 
 CXXFLAGS+=-g -O -fPIC -m$(MS) -shared -D HAVE_CONFIG_H
 

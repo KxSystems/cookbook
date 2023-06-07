@@ -86,7 +86,7 @@ bool Rvectorx::make()
   pos=0;
   DO(n,make1(cont[i]));
   len=pos;
-  DO(n,free(cont[i]));
+  DO(n,delete cont[i]);
   cont.clear();
   return true;
 }

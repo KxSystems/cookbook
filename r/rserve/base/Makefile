@@ -1,6 +1,6 @@
 
-MS=$(shell getconf LONG_BIT)
-UNAME=$(shell uname -s)
+MS?=$(shell getconf LONG_BIT)
+UNAME?=$(shell uname -s)
 Q=~/q
 
 SRC=$(wildcard *.cc)
@@ -30,9 +30,12 @@ $(TGT): $(OBJ)
 	chmod 644 $(TGT)
 	ls -l $(TGT)
 	cp $(TGT) $(Q)/$(PFX)$(MS)
+l64: 
 
 %.o: %.cc
 	$(CXX) $(WALL) $(CXXFLAGS) -c $<
 
 clean:
 	rm -rf $(OBJ) $(TGT) *~
+cleano:
+	rm -rf $(OBJ) *~
