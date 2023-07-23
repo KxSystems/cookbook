@@ -62,7 +62,7 @@ monthlyusagebycusttype:{[months]
   `meterid xkey select meterid,custtype from static}
 
 /- Generate a pivot table with the % usage of each customer type in each region
-/- http://code.kx.com/wiki/Pivot
+/- https://code.kx.com/q/kb/pivoting-tables/
 /- e.g. meterusagepivot[2013.08.01;2013.08.31;1b]
 meterusagepivot:{[startdate;enddate;aspercent]
  t:meterusage[startdate;enddate];

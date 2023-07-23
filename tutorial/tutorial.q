@@ -83,7 +83,7 @@ info:{
  -1"but may degrade the query performance.";
  -1"Garbage collection is currently ",(("OFF";"ON").tut.gc);
  -1"You are currently using the ",(1 _ string .z.o),"bit version of kdb+\n";
- -1"See http://code.kx.com for reference on the q language.\n";
+ -1"See http://code.kx.com/q/ref for reference on the q language.\n";
  -1"Run .tut.help[] to redisplay the below instructions";
  -1"Start by running .tut.n[].\n";
  help[];

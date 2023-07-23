@@ -2,7 +2,7 @@
 
 
 
-Companion files to the [Knowledge Base](https://code.kx.com/q/) at code.kx.com.
+Companion files to the [Knowledge Base](https://code.kx.com/q) at code.kx.com.
 
 See [license terms](https://code.kx.com/q/about/thissite/#license).
 

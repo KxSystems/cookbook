@@ -6,7 +6,7 @@ The idea is to give you a taste of the performance of kdb+ and the q language.
 Please experiment with kdb+ and the functions provided. 
 Resources are available at 
 
-http://code.kx.com
+https://code.kx.com/q
  
 It has been designed to run with the free 32 bit download, so care has been taken to constrain
 memory usage. Better performance is possible with the licenced 64 bit version.   
