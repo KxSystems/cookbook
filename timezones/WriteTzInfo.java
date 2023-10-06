@@ -1,4 +1,4 @@
-// Requires Java 17+
+// Requires Java 11+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static java.time.ZoneOffset.UTC;
 import static java.util.TimeZone.getTimeZone;
@@ -53,7 +54,7 @@ public class WriteTzInfo {
                     .map(e -> generateAdjustmentLines(e.getKey(), e.getValue()))
                     .flatMap(Collection::stream)
                     .sorted()
-                    .toList();
+                    .collect(Collectors.toList());
 
             for (String line : lines) {
                 out.println(line);
