@@ -8,7 +8,7 @@
 
 // create some test data to be published
 // this could also be read from a csv file (for example)
-meterdata:([]sym:10000?200j; reading:10000?500i)
+meterdata:([]sym:10000?200; reading:10000?500i)
 griddata:([]sym:2000?100?`3; capacity:2000?100f; flowrate:2000?3000i) 
 
 // utility functions to get the next set of data to publish
@@ -34,7 +34,7 @@ grid:([]time:`timestamp$(); sym:`symbol$(); capacity:`float$(); flowrate:`int$()
 upath:"tick/u.q"
 @[system;"l ",upath;{-2"Failed to load u.q from ",x," : ",y, 
 		       ". Please make sure u.q is accessible.",
-                       " kdb+tick can be downloaded from http://code.kx.com/wsvn/code/kx/kdb+tick";
+                       " kdb+tick can be downloaded from https://github.com/KxSystems/kdb-tick";
 		       exit 2}[upath]]
 
 // initialise pubsub 

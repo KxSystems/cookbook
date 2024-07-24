@@ -21,4 +21,4 @@ Subscribe to 10 syms of meter data:
 h(`.u.sub;`meter;`long$til 10)
 
 Add subscriptions
-h(`.u.add;`meter;20 21 22j)
+h(`.u.add;`meter;20 21 22)
