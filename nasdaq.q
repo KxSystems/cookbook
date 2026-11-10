@@ -16,13 +16,13 @@ clean: except[;"$,"];
 //                                 Non-trading days are absent.
 //                                 Signals 'no data for <sym> if a symbol is unknown.
 // @example
-// yahoo[10;`GOOG`AMZN]
+// nasdaq[10;`GOOG`AMZN]
 // /=> Date       Sym  Open    High     Low      Close  Volume
 // /=> ---------------------------------------------------------
 // /=> 2026.11.02 AMZN 243.01  253.81   242.28   245.63 58347980
 // /=> 2026.11.02 GOOG 280.575 285.2099 277.78   278.04 29231780
 // /=> ..
-yahoo:{[ndays;stocks]
+nasdaq:{[ndays;stocks]
  / ensure that stocks is a list (it might be a single symbol) and then get rid of duplicates, if any
  stocks: distinct stocks,();
  enddate: .z.d; / .z.d gives current date
