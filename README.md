@@ -13,7 +13,7 @@ Companion files to the [Knowledge Base](https://code.kx.com/q/) at code.kx.com.
 * tutorial: example kdb+ on-disk database containing smart meter data inc UI
 * ws.htm: simple websocket client
 * wslogin.htm: websocket client using kdb+ javascript serialization
-* yahoo.q: query yahoo financials and produce a table of trading info for a list of stocks during the last few days
+* yahoo.q: query historical prices (via the Nasdaq API) and produce a table of trading info for a list of stocks during the last few days
 * yahoo_compact.q: compact version of yahoo.q (no comments)
 
 See [license terms](https://code.kx.com/q/about/thissite/#license).
