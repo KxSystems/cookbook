@@ -7,6 +7,7 @@ clean: except[;"$,"];
 // and returns a table of trading info for
 // a list of stocks over the last few days. No API key is needed.
 // Requires HTTPS support in q (OpenSSL libraries and a CA certificate file).
+// See https://code.kx.com/kdb-x/how_to/io_and_communication/ssl.html
 // Yahoo's replacement API rejects requests without a User-Agent header, which .Q.hg
 // does not send, so it cannot be used here.
 // @param ndays  {short|int|long}  Number of calendar days to look back from today.
